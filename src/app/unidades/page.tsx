@@ -1,32 +1,46 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+interface Unit {
+  id: string;
+  code?: string;
+  status?: string;
+  name: string;
+  brand?: string;
+  rating?: number;
+  pending_treatments?: number;
+}
 
 export default function UnidadesPage() {
-  const [units, setUnits] = useState<Array<{ id: string; code?: string; status?: string; name: string; brand?: string; rating?: number; pending_treatments?: number }>>([]);
+  const [units, setUnits] = useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchUnits() {
       try {
         setLoading(true);
-        const { data, error } = await supabase
-          .from('units')
-          .select('*')
-          .order('code', { ascending: true });
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-        if (error) {
-          console.error('Erro ao buscar unidades:', error);
-        } else if (data) {
+        if (!url || !key) {
+          setLoading(false);
+          return;
+        }
+
+        const res = await fetch(`${url}/rest/v1/units?select=*&order=code.asc`, {
+          headers: {
+            apikey: key,
+            Authorization: `Bearer ${key}`,
+          },
+        });
+
+        if (res.ok) {
+          const data = await res.json();
           setUnits(data);
         }
       } catch (err) {
-        console.error('Falha ao conectar com o banco:', err);
+        console.error('Erro ao buscar unidades:', err);
       } finally {
         setLoading(false);
       }
@@ -41,7 +55,7 @@ export default function UnidadesPage() {
         <div className="mb-6 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-[#0F4C81]">Painel das 24 Unidades</h1>
-            <p className="text-slate-600 text-sm">Grupo Beija-flor — Integração Supabase</p>
+            <p className="text-slate-600 text-sm">Grupo Beija-flor — Integração com Supabase</p>
           </div>
           <a href="/" className="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
             ⬅ Voltar ao início
@@ -59,7 +73,7 @@ export default function UnidadesPage() {
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-mono font-bold text-[#0F4C81] bg-blue-50 px-2 py-0.5 rounded">
-                      {unit.code}
+                      {unit.code || 'UBF'}
                     </span>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                       unit.status === 'Atenção' ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'
@@ -68,7 +82,7 @@ export default function UnidadesPage() {
                     </span>
                   </div>
                   <h3 className="font-bold text-slate-800 text-base">{unit.name}</h3>
-                  <p className="text-xs text-slate-400 mb-4">{unit.brand}</p>
+                  <p className="text-xs text-slate-400 mb-4">{unit.brand || 'Grupo Beija-flor'}</p>
                 </div>
 
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
