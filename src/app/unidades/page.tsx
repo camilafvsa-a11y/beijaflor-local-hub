@@ -8,7 +8,7 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export default function UnidadesPage() {
-  const [units, setUnits] = useState<any[]>([]);
+  const [units, setUnits] = useState<Array<{ id: string; code?: string; status?: string; name: string; brand?: string; rating?: number; pending_treatments?: number }>>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function UnidadesPage() {
         <div className="mb-6 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-[#0F4C81]">Painel das 24 Unidades</h1>
-            <p className="text-slate-600 text-sm">Grupo Beija-flor — Integração com Supabase & Google Business</p>
+            <p className="text-slate-600 text-sm">Grupo Beija-flor — Integração Supabase</p>
           </div>
           <a href="/" className="bg-slate-200 hover:bg-slate-300 text-slate-800 px-4 py-2 rounded-lg text-sm font-semibold transition-colors">
             ⬅ Voltar ao início
