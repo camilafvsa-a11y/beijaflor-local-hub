@@ -12,17 +12,6 @@ interface Unit {
   pending_treatments?: number;
 }
 
-// Dados de contingência caso as variáveis do Supabase não estejam na Vercel
-const MOCK_UNITS: Unit[] = Array.from({ length: 24 }).map((_, i) => ({
-  id: `unit-${i + 1}`,
-  code: `UBF-${String(i + 1).padStart(2, '0')}`,
-  status: i % 5 === 0 ? 'Atenção' : 'Operando Normalmente',
-  name: `Unidade Beija-flor ${i + 1}`,
-  brand: i % 2 === 0 ? 'Posto Beija-flor' : 'Churrascaria Beija-flor',
-  rating: Number((4.5 + (i % 5) * 0.1).toFixed(1)),
-  pending_treatments: i % 4,
-}));
-
 export default function UnidadesPage() {
   const [units, setUnits] = useState<Unit[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,32 +33,117 @@ export default function UnidadesPage() {
 
           if (res.ok) {
             const data = await res.json();
-            if (Array.isArray(data) && data.length > 0) {
+            if (Array.isArray(data)) {
               setUnits(data);
-              setLoading(false);
-              return;
             }
           }
         }
       } catch (err) {
         console.error('Erro ao buscar do Supabase:', err);
+      } finally {
+        setLoading(false);
       }
-
-      // Fallback para exibir a grade
-      setUnits(MOCK_UNITS);
-      setLoading(false);
     }
 
     fetchUnits();
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-100 p-8 font-sans">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6 flex justify-between items-center">
+    <div className="flex min-h-screen bg-slate-100 font-sans">
+      {/* Menu Lateral (Sidebar) */}
+      <aside className="w-64 bg-white border-r border-slate-200 p-4 flex flex-col justify-between hidden md:flex shrink-0">
+        <div>
+          {/* Logo / Header */}
+          <div className="mb-6">
+            <h1 className="text-xl font-bold text-[#0F4C81]">Beija-flor</h1>
+            <p className="text-xs text-slate-500">Local Hub — Gestão de Rede</p>
+          </div>
+
+          {/* Campo de Busca */}
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="Buscar unidade..."
+              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Links de Navegação */}
+          <nav className="space-y-1">
+            <a
+              href="/"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <span>🏠</span>
+              <span>Início</span>
+            </a>
+            <a
+              href="/unidades"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-white bg-[#0F4C81] rounded-lg"
+            >
+              <span>🏢</span>
+              <span>Unidades</span>
+            </a>
+            <a
+              href="#"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <span>📋</span>
+              <span>Tratativas</span>
+            </a>
+            <a
+              href="#"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <span>⭐</span>
+              <span>Avaliações</span>
+            </a>
+            <a
+              href="#"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <span>🛡️</span>
+              <span>Aprovações</span>
+            </a>
+            <a
+              href="#"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <span>💡</span>
+              <span>Inteligência</span>
+            </a>
+            <a
+              href="#"
+              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <span>📊</span>
+              <span>Relatórios</span>
+            </a>
+          </nav>
+        </div>
+
+        {/* Perfil do Usuário */}
+        <div className="pt-4 border-t border-slate-200 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-blue-100 text-[#0F4C81] flex items-center justify-center font-bold text-xs">
+            PO
+          </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#0F4C81]">Painel das 24 Unidades</h1>
-            <p className="text-slate-600 text-sm">Grupo Beija-flor — Integração de Rede</p>
+            <p className="text-xs font-bold text-slate-800">Product Owner</p>
+            <p className="text-[10px] text-slate-500">Administrador</p>
+          </div>
+        </div>
+      </aside>
+
+      {/* Conteúdo Principal */}
+      <main className="flex-1 p-8 overflow-y-auto">
+        <div className="mb-6 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-4 py-2 rounded-lg font-medium">
+          ⚠️ AMBIENTE DE TESTE — PRODUCT OWNER EXCLUSIVE (HOMOLOGAÇÃO FASE 0)
+        </div>
+
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-[#0F4C81]">Painel das Unidades</h1>
+            <p className="text-slate-600 text-sm">Grupo Beija-flor — Integração direta via Supabase</p>
           </div>
           <a
             href="/"
@@ -81,7 +155,12 @@ export default function UnidadesPage() {
 
         {loading ? (
           <div className="text-center py-12 text-slate-500 font-semibold">
-            Carregando unidades...
+            Conectando ao Supabase e carregando unidades...
+          </div>
+        ) : units.length === 0 ? (
+          <div className="bg-white p-8 rounded-xl border border-slate-200 text-center">
+            <p className="text-slate-600 font-medium">Nenhuma unidade encontrada na tabela <code className="bg-slate-100 px-2 py-0.5 rounded text-xs">units</code> do Supabase.</p>
+            <p className="text-xs text-slate-400 mt-2">Certifique-se de que a tabela possui dados e que as variáveis de ambiente <code className="bg-slate-100 px-1">NEXT_PUBLIC_SUPABASE_URL</code> e <code className="bg-slate-100 px-1">NEXT_PUBLIC_SUPABASE_ANON_KEY</code> estão configuradas na Vercel.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -119,7 +198,7 @@ export default function UnidadesPage() {
             ))}
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }
