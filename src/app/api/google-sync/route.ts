@@ -47,128 +47,128 @@ export async function GET(request: Request) {
     },
     {
         "id": "7",
-        "title": "Churrascaria Beija-flor | Oliveira",
-        "address": "Fernão Dias KM 612 - Oliveira - MG",
+        "title": "Churrascaria Beija-flor | Nova União",
+        "address": "BR 381, km 409 - Nova União - MG",
         "category": "Churrascaria"
     },
     {
         "id": "8",
-        "title": "Restaurante Beija-flor | Vespasiano",
-        "address": "MG 424 - KM 03 - Vespasiano - MG",
-        "category": "Restaurante"
+        "title": "Churrascaria Beija-flor | Jardim Vitória",
+        "address": "Anel Rodoviário Celso Mello Azevedo, 28500 - Jardim Vitória, Belo Horizonte - MG",
+        "category": "Churrascaria"
     },
     {
         "id": "9",
-        "title": "Posto Beija-flor | Betim (Via Expressa)",
-        "address": "Via Expressa de Betim, 2000 - Betim - MG",
-        "category": "Posto de Combustível"
+        "title": "Churrascaria Beija-flor | Esmeraldas (BR-040)",
+        "address": "Rod. BR-040 - Das Letras, Esmeraldas - MG",
+        "category": "Churrascaria"
     },
     {
         "id": "10",
-        "title": "Posto Beija-flor | Sete Lagoas",
-        "address": "Av. Marechal Castelo Branco, 2700 - Sete Lagoas - MG",
+        "title": "Posto Beija-flor | Sabará (KM13)",
+        "address": "BR-381, KM 13, S/N - Borba Gato, Sabará - MG",
         "category": "Posto de Combustível"
     },
     {
         "id": "11",
-        "title": "Restaurante Beija-flor | Santo Antônio do Amparo",
-        "address": "BR-381 KM 606 - Santo Antônio do Amparo - MG",
-        "category": "Restaurante"
+        "title": "Posto Shell | Sete Lagoas",
+        "address": "Avenida Marechal Castelo Branco - Universitário, Sete Lagoas - MG",
+        "category": "Posto de Combustível"
     },
     {
         "id": "12",
-        "title": "Posto Beija-flor | Oliveira",
-        "address": "BR-381 KM 612 - Oliveira - MG",
-        "category": "Posto de Combustível"
-    },
-    {
-        "id": "13",
-        "title": "Churrascaria Beija-flor | Betim",
-        "address": "BR-381 KM 490 - Betim - MG",
+        "title": "Churrascaria Beija-flor | Jardim Teresópolis",
+        "address": "BR 381, Km 486 - Jardim Teresópolis, Betim - MG",
         "category": "Churrascaria"
     },
     {
-        "id": "14",
-        "title": "Posto Beija-flor | Contagem",
-        "address": "Av. Babita Camargos, 1200 - Contagem - MG",
+        "id": "13",
+        "title": "Posto Beija-flor | Esmeraldas (BR-040)",
+        "address": "BR-040 - Das Letras, Esmeraldas - MG",
         "category": "Posto de Combustível"
     },
     {
+        "id": "14",
+        "title": "Restaurante Beija-flor | Vespasiano",
+        "address": "MG-424 - Jardim da Glória, Vespasiano - MG",
+        "category": "Restaurante"
+    },
+    {
         "id": "15",
-        "title": "Posto Beija-flor | Sabará (KM11)",
-        "address": "BR-381 KM 11 - Sabará - MG",
+        "title": "Posto Beija-flor | San Genaro",
+        "address": "Avenida Ruth Brandão Azevedo, 379 - San Genaro, Ribeirão das Neves - MG",
         "category": "Posto de Combustível"
     },
     {
         "id": "16",
-        "title": "Posto Beija-flor | Santa Luzia",
-        "address": "Av. das Indústrias, 1500 - Santa Luzia - MG",
+        "title": "Posto Beija-flor | Sete Lagoas",
+        "address": "BR-040, Km 468 - Sete Lagoas - MG",
         "category": "Posto de Combustível"
     },
     {
         "id": "17",
-        "title": "Churrascaria Beija-flor | Vespasiano",
-        "address": "MG-424 KM 03 - Vespasiano - MG",
-        "category": "Churrascaria"
-    },
-    {
-        "id": "18",
-        "title": "Posto Beija-flor | Pedro Leopoldo",
-        "address": "Rodovia MG-824 - Pedro Leopoldo - MG",
+        "title": "Posto Beija-flor | Nova União",
+        "address": "BR 381, km 409 - Nova União - MG",
         "category": "Posto de Combustível"
     },
     {
-        "id": "19",
-        "title": "Churrascaria Beija-flor | Santo Antônio do Amparo",
-        "address": "BR-381 KM 606 - Santo Antônio do Amparo - MG",
+        "id": "18",
+        "title": "Churrascaria Beija-flor | Juatuba (Betim)",
+        "address": "BR 262, km 3602 - Pingo D'água, Betim - MG",
         "category": "Churrascaria"
     },
     {
+        "id": "19",
+        "title": "Restaurante Beija-flor | Santo Antônio do Amparo",
+        "address": "Rodovia Fernão Dias, s/n - km 606, Santo Antônio do Amparo - MG",
+        "category": "Restaurante"
+    },
+    {
         "id": "20",
-        "title": "Posto Beija-flor | Matozinhos",
-        "address": "Av. Caio Martins - Matozinhos - MG",
+        "title": "Posto Beija-Flor | Canal Barreiro",
+        "address": "Av. do Canal, 299 - Átila de Paiva, Belo Horizonte - MG",
         "category": "Posto de Combustível"
     },
     {
         "id": "21",
-        "title": "Posto Beija-flor | Nova Lima",
-        "address": "Rodovia Januário Carneiro - Nova Lima - MG",
+        "title": "Posto Beija-flor | Juatuba (Betim)",
+        "address": "BR-262, S/N - KM 3602 - Pingo D'água, Betim - MG",
         "category": "Posto de Combustível"
     },
     {
         "id": "22",
-        "title": "Posto Beija-flor | Ribeirão das Neves",
-        "address": "LMG-806 - Ribeirão das Neves - MG",
+        "title": "Posto Beija-flor | Via Expressa (Betim)",
+        "address": "Avenida Campo de Ourique, 473 - Dom Bosco, Betim - MG",
         "category": "Posto de Combustível"
     },
     {
         "id": "23",
-        "title": "Churrascaria Beija-flor | Sete Lagoas",
-        "address": "Av. Marechal Castelo Branco - Sete Lagoas - MG",
-        "category": "Churrascaria"
+        "title": "Posto Beija-flor | Jardim Teresópolis",
+        "address": "BR 381, Km 486 - Jardim Teresópolis, Betim - MG",
+        "category": "Posto de Combustível"
     },
     {
         "id": "24",
-        "title": "Posto Beija-flor | Lagoa Santa",
-        "address": "Av. Acadêmico Nilo Figueiredo - Lagoa Santa - MG",
+        "title": "Posto Beija-flor | Teresa Cristina (Belo Horizonte)",
+        "address": "Av. Teresa Cristina, 5600 - Belo Horizonte - MG",
         "category": "Posto de Combustível"
     },
     {
         "id": "25",
-        "title": "Posto Beija-flor | Confins",
-        "address": "LMG-800 - Confins - MG",
+        "title": "Posto Beija-flor | Santa Tereza",
+        "address": "Rua Mármore, 21 - Santa Tereza, Belo Horizonte - MG",
         "category": "Posto de Combustível"
     },
     {
         "id": "26",
-        "title": "Restaurante Beija-flor | Sabará",
-        "address": "BR-381 KM 13 - Sabará - MG",
-        "category": "Restaurante"
+        "title": "Grupo Beija-flor (Sede)",
+        "address": "Belo Horizonte - MG",
+        "category": "Escritório da empresa"
     },
     {
         "id": "27",
-        "title": "Posto Beija-flor | Brumadinho",
-        "address": "Rodovia Alberto Flores - Brumadinho - MG",
+        "title": "Posto Beija-flor | Santo Antônio do Amparo",
+        "address": "Rodovia Fernão Dias, S/N - KM 606, Santo Antônio do Amparo - MG",
         "category": "Posto de Combustível"
     }
   ];
