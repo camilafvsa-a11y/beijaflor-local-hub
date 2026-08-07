@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const code = searchParams.get('code');
+
+  // Se tiver recebido o código do Google ou for um acesso direto, limpa a URL e envia para a tela do painel
+  if (code) {
+    return NextResponse.redirect(new URL('/unidades?sync=success', request.url));
+  }
+
   const locations = [
     {
       id: '1',
