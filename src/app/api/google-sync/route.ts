@@ -6,16 +6,14 @@ export async function GET(request: Request) {
 
   if (!clientId || !clientSecret) {
     return NextResponse.json(
-      { error: 'GOOGLE_CLIENT_ID ou GOOGLE_CLIENT_SECRET não configurados na Vercel.' },
+      { error: 'GOOGLE_CLIENT_ID ou GOOGLE_CLIENT_SECRET não configurados.' },
       { status: 400 }
     );
   }
 
-  // Verifica se o Google enviou o código de autorização de volta
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
 
-  // PASSO 1: Se ainda não tem o código, redireciona o usuário para fazer login no Google
   if (!code) {
     const redirectUri = 'https://beijaflor-local-hub.vercel.app/api/google-sync';
     const scope = 'https://www.googleapis.com/auth/business.manage';
@@ -26,7 +24,6 @@ export async function GET(request: Request) {
     return NextResponse.redirect(authUrl);
   }
 
-  // PASSO 2: Se recebeu o código do Google, troca pelo Token de Acesso e busca os dados
   try {
     const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
@@ -43,37 +40,24 @@ export async function GET(request: Request) {
     const tokenData = await tokenRes.json();
 
     if (!tokenData.access_token) {
-      return NextResponse.json({ error: 'Falha ao obter token do Google', details: tokenData }, { status: 400 });
+      return NextResponse.json({ error: 'Falha ao obter token', details: tokenData }, { status: 400 });
     }
 
-    // PASSO 3: Busca as contas do Google Meu Negócio
-    const accountsRes = await fetch('https://mybusinessaccountmanagement.googleapis.com/v1/accounts', {
-      headers: { Authorization: `Bearer ${tokenData.access_token}` },
-    });
-    const accountsData = await accountsRes.json();
-
-    if (!accountsData.accounts || accountsData.accounts.length === 0) {
-      return NextResponse.json({ error: 'Nenhuma conta encontrada', details: accountsData });
-    }
-
-    const accountName = accountsData.accounts[0].name;
-
-    // PASSO 4: Busca as unidades/locais reais do Grupo Beija-flor
+    // Busca direta na API de informações de locais usando a conta logada
     const locationsRes = await fetch(
-      `https://mybusinessbusinessinformation.googleapis.com/v1/${accountName}/locations?readMask=name,title,storeCode,phoneNumbers,storefrontAddress,websiteUri`,
+      `https://mybusinessbusinessinformation.googleapis.com/v1/accounts/me/locations?readMask=name,title,storeCode,phoneNumbers,storefrontAddress,websiteUri`,
       {
         headers: { Authorization: `Bearer ${tokenData.access_token}` },
       }
     );
+
     const locationsData = await locationsRes.json();
 
     return NextResponse.json({
       success: true,
-      account: accountName,
-      totalLocations: locationsData.locations?.length || 0,
-      locations: locationsData.locations || [],
+      data: locationsData,
     });
   } catch (error) {
-    return NextResponse.json({ error: 'Erro de comunicação com o Google', details: String(error) }, { status: 500 });
+    return NextResponse.json({ error: 'Erro ao conectar com Google', details: String(error) }, { status: 500 });
   }
 }
