@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { 
   MapPin, 
   Search, 
@@ -9,7 +10,9 @@ import {
   Building2, 
   CheckCircle2, 
   ExternalLink,
-  Store
+  Store,
+  ArrowLeft,
+  LayoutDashboard
 } from 'lucide-react';
 
 interface Location {
@@ -92,8 +95,27 @@ export default function UnidadesPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-6 md:p-10">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-7xl mx-auto space-y-6">
         
+        {/* Navigation Bar / Return Link */}
+        <div className="flex items-center justify-between">
+          <Link 
+            href="/" 
+            className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 bg-white px-3.5 py-2 rounded-xl border border-slate-200/80 shadow-sm transition-all hover:shadow-md"
+          >
+            <ArrowLeft className="w-4 h-4 text-slate-500" />
+            Voltar ao Dashboard
+          </Link>
+
+          <Link
+            href="/"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-700"
+          >
+            <LayoutDashboard className="w-3.5 h-3.5" />
+            Beija-flor Local Hub
+          </Link>
+        </div>
+
         {/* Top Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div>
