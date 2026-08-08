@@ -37,7 +37,7 @@ export default function HomePage() {
               className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
             >
               <span>🏢</span>
-              <span>Unidades (24)</span>
+              <span>Unidades (27)</span>
             </a>
             <a
               href="#"
