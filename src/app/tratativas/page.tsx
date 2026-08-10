@@ -39,15 +39,31 @@ export default function TratativasPage() {
 
   const loadTratativas = async () => {
     try {
+      // Recupea itens salvos localmente primeiro
+      const localData = localStorage.getItem('beijaflor_tratativas_locais');
+      const savedLocally: Tratativa[] = localData ? JSON.parse(localData) : [];
+
       const res = await fetch('/api/tratativas');
       if (res.ok) {
         const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          setTratativas(data);
-        }
+        const serverData = Array.isArray(data) ? data : [];
+        
+        // Combina os dados do banco com os mantidos localmente sem duplicar
+        const combined = [...savedLocally];
+        serverData.forEach(item => {
+          if (!combined.some(c => c.codigo === item.codigo || (c.id && c.id === item.id))) {
+            combined.push(item);
+          }
+        });
+
+        setTratativas(combined);
+      } else if (savedLocally.length > 0) {
+        setTratativas(savedLocally);
       }
     } catch (err) {
       console.error('Erro ao carregar tratativas:', err);
+      const localData = localStorage.getItem('beijaflor_tratativas_locais');
+      if (localData) setTratativas(JSON.parse(localData));
     } finally {
       setLoading(false);
     }
@@ -69,7 +85,9 @@ export default function TratativasPage() {
   };
 
   const handleSaveText = (id: string) => {
-    setTratativas(tratativas.map(t => (t.id === id || t.codigo === id) ? { ...t, resposta_ia: editedText } : t));
+    const updated = tratativas.map(t => (t.id === id || t.codigo === id) ? { ...t, resposta_ia: editedText } : t);
+    setTratativas(updated);
+    localStorage.setItem('beijaflor_tratativas_locais', JSON.stringify(updated));
     setEditingId(null);
   };
 
@@ -92,9 +110,11 @@ export default function TratativasPage() {
       if (res.ok) {
         const data = await res.json();
         if (data.resposta) {
-          setTratativas(prev => prev.map((item, idx) => 
+          const updated = tratativas.map((item, idx) => 
             (item.id === t.id || `${idx}` === indexKey) ? { ...item, resposta_ia: data.resposta } : item
-          ));
+          );
+          setTratativas(updated);
+          localStorage.setItem('beijaflor_tratativas_locais', JSON.stringify(updated));
         }
       }
     } catch (err) {
@@ -106,7 +126,9 @@ export default function TratativasPage() {
 
   const handleFinalizar = (id?: string) => {
     if (!id) return;
-    setTratativas(tratativas.map(t => (t.id === id || t.codigo === id) ? { ...t, status: 'Concluída' } : t));
+    const updated = tratativas.map(t => (t.id === id || t.codigo === id) ? { ...t, status: 'Concluída' } : t);
+    setTratativas(updated);
+    localStorage.setItem('beijaflor_tratativas_locais', JSON.stringify(updated));
   };
 
   const handleCriarTratativa = async (e: React.FormEvent) => {
@@ -126,13 +148,17 @@ export default function TratativasPage() {
       status: 'Pendente'
     };
 
-    // Fixa na tela na hora
-    setTratativas(prev => [novaTratativa, ...prev]);
+    // 1. Atualiza o estado e persiste no localStorage para nunca sumir da tela
+    const novaLista = [novaTratativa, ...tratativas];
+    setTratativas(novaLista);
+    localStorage.setItem('beijaflor_tratativas_locais', JSON.stringify(novaLista));
+
     setSearchTerm('');
     setShowModal(false);
     setCliente('');
     setMensagem('');
 
+    // 2. Tenta enviar para o Supabase em segundo plano
     try {
       await fetch('/api/tratativas', {
         method: 'POST',
@@ -140,7 +166,7 @@ export default function TratativasPage() {
         body: JSON.stringify(novaTratativa)
       });
     } catch (err) {
-      console.error('Erro ao salvar no banco:', err);
+      console.error('Erro ao salvar no Supabase:', err);
     } finally {
       setSaving(false);
     }
@@ -168,7 +194,7 @@ export default function TratativasPage() {
         <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-[#0f4c81] text-white p-8 rounded-3xl shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <span className="bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-amber-400/30">
-              Banco de Dados Supabase Ativo
+              Banco de Dados Supabase + Cache Ativo
             </span>
             <h1 className="text-3xl font-black tracking-tight mt-3">Tratativa de Chamados e Feedback</h1>
             <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
@@ -200,13 +226,13 @@ export default function TratativasPage() {
         {loading ? (
           <div className="bg-white p-12 rounded-3xl border border-slate-200/80 text-center flex flex-col items-center justify-center gap-3">
             <Loader2 className="w-8 h-8 text-[#0f4c81] animate-spin" />
-            <p className="text-sm font-bold text-slate-600">Conectando ao banco Supabase e buscando chamados...</p>
+            <p className="text-sm font-bold text-slate-600">Carregando chamados e sincronizando banco...</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="bg-white p-12 rounded-3xl border border-slate-200/80 text-center space-y-3">
             <AlertCircle className="w-10 h-10 text-slate-300 mx-auto" />
-            <h3 className="text-base font-bold text-slate-700">Nenhuma ocorrência registrada</h3>
-            <p className="text-xs text-slate-400">Clique em "Registrar Ocorrência" para inserir o primeiro chamado real.</p>
+            <h3 className="text-base font-bold text-slate-700">Nenhuma ocorrência encontrada</h3>
+            <p className="text-xs text-slate-400">Clique em "Registrar Ocorrência" para inserir um chamado real.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -395,7 +421,7 @@ export default function TratativasPage() {
                     className="px-5 py-2 bg-[#0f4c81] text-white text-xs font-bold rounded-xl shadow-sm hover:bg-blue-900 disabled:opacity-50 flex items-center gap-1.5"
                   >
                     {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-                    {saving ? 'Salvando...' : 'Salvar no Supabase'}
+                    {saving ? 'Salvando...' : 'Salvar Ocorrência'}
                   </button>
                 </div>
               </form>
