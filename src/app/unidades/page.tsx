@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
-  MapPin, Search, Fuel, UtensilsCrossed, Building2, CheckCircle2, ExternalLink, Store, ArrowLeft, Star
+  MapPin, Search, CheckCircle2, ExternalLink, ArrowLeft, Star
 } from 'lucide-react';
 
 interface Location {
@@ -59,22 +59,20 @@ export default function UnidadesPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans">
+    <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-800">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Navigation Bar */}
         <div className="flex items-center justify-between">
           <Link 
             href="/" 
-            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-xs transition-all"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-900 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-sm transition-all"
           >
             <ArrowLeft className="w-3.5 h-3.5 text-slate-500" />
             Voltar ao Dashboard
           </Link>
         </div>
 
-        {/* Top Header Minimalista */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-3">
               <h1 className="text-xl font-bold text-slate-900 tracking-tight">Gestão das 27 Unidades</h1>
@@ -83,12 +81,11 @@ export default function UnidadesPage() {
               </span>
             </div>
             <p className="text-slate-500 text-xs mt-1">
-              Exibindo <span className="font-semibold text-slate-800">{filteredLocations.length}</span> unidades cadastradas no Grupo Beija-flor com atualização de notas no Google Maps.
+              Exibindo <span className="font-semibold text-slate-800">{filteredLocations.length}</span> unidades cadastradas no Grupo Beija-flor.
             </p>
           </div>
         </div>
 
-        {/* Filter Controls */}
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -97,7 +94,7 @@ export default function UnidadesPage() {
               placeholder="Buscar unidade por nome ou endereço..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200/80 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-all shadow-xs"
+              className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200/80 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-slate-900/10 transition-all shadow-sm"
             />
           </div>
 
@@ -108,7 +105,7 @@ export default function UnidadesPage() {
                 onClick={() => setSelectedCategory(cat)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                   selectedCategory === cat
-                    ? 'bg-[#0f4c81] text-white shadow-xs'
+                    ? 'bg-[#0f4c81] text-white shadow-sm'
                     : 'bg-white text-slate-600 border border-slate-200/80 hover:bg-slate-50'
                 }`}
               >
@@ -118,12 +115,11 @@ export default function UnidadesPage() {
           </div>
         </div>
 
-        {/* Grid Cards com Nota visível */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredLocations.map((loc) => (
             <div
               key={loc.id}
-              className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between group"
+              className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
             >
               <div>
                 <div className="flex items-center justify-between gap-2 mb-3">
@@ -131,7 +127,6 @@ export default function UnidadesPage() {
                     {loc.category}
                   </span>
                   
-                  {/* Badge da Nota Média */}
                   <div className="flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/60">
                     <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                     <span className="text-xs font-bold text-amber-800">{loc.rating}</span>
