@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Lightbulb, TrendingUp, Target, Zap } from 'lucide-react';
+import { ArrowLeft, Lightbulb, TrendingUp, Target, Star, BarChart2 } from 'lucide-react';
 
 export default function InteligenciaPage() {
   return (
@@ -16,40 +16,72 @@ export default function InteligenciaPage() {
 
         <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <Lightbulb className="w-6 h-6 text-amber-500" /> Painel de Inteligência de Mercado
+            <Lightbulb className="w-6 h-6 text-amber-500" /> Inteligência de Reputação & Evolução
           </h1>
-          <p className="text-slate-500 text-sm mt-1">Insights automáticos baseados nas buscas locais e avaliações do Google.</p>
+          <p className="text-slate-500 text-sm mt-1">Evolução temporal das notas médias e consolidação das 27 contas do Grupo Beija-flor.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Evolução da Nota Média */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-emerald-600" /> Evolução da Nota Média da Rede (Últimos 6 Meses)
+            </h2>
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+              Evolução: 4.5 ★ ➔ 4.8 ★
+            </span>
+          </div>
+
+          <div className="grid grid-cols-6 gap-2 pt-4">
+            {[
+              { mes: 'Março', nota: '4.5' },
+              { mes: 'Abril', nota: '4.6' },
+              { mes: 'Maio', nota: '4.6' },
+              { mes: 'Junho', nota: '4.7' },
+              { mes: 'Julho', nota: '4.7' },
+              { mes: 'Agosto', nota: '4.8' },
+            ].map((m) => (
+              <div key={m.mes} className="bg-slate-50 p-3 rounded-xl border border-slate-200/60 text-center space-y-1">
+                <span className="text-[11px] font-semibold text-slate-400">{m.mes}</span>
+                <div className="text-lg font-bold text-slate-800 flex items-center justify-center gap-1">
+                  {m.nota} <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
-              <TrendingUp className="w-5 h-5" />
+            <h3 className="font-bold text-slate-800 flex items-center gap-2">
+              <Target className="w-4 h-4 text-[#0f4c81]" /> Top 3 Unidades Melhor Avaliadas
+            </h3>
+            <div className="space-y-2 pt-2">
+              <div className="flex justify-between items-center text-xs p-2.5 bg-slate-50 rounded-lg">
+                <span className="font-semibold text-slate-700">1. Churrascaria Beija-flor | Sabará (KM13)</span>
+                <span className="font-bold text-amber-600 flex items-center gap-1">4.9 ★</span>
+              </div>
+              <div className="flex justify-between items-center text-xs p-2.5 bg-slate-50 rounded-lg">
+                <span className="font-semibold text-slate-700">2. Posto Beija-flor | Lourdes (Centro)</span>
+                <span className="font-bold text-amber-600 flex items-center gap-1">4.8 ★</span>
+              </div>
+              <div className="flex justify-between items-center text-xs p-2.5 bg-slate-50 rounded-lg">
+                <span className="font-semibold text-slate-700">3. Posto Beija-flor | Igarapé</span>
+                <span className="font-bold text-amber-600 flex items-center gap-1">4.8 ★</span>
+              </div>
             </div>
-            <h3 className="font-bold text-slate-800">Pico de Buscas em Sabará</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Buscas por "Restaurante na BR-381" subiram 34% nos finais de semana. Recomendado impulsionar fotos do restaurante da unidade Sabará.
-            </p>
           </div>
 
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
-              <Target className="w-5 h-5" />
+            <h3 className="font-bold text-slate-800 flex items-center gap-2">
+              <BarChart2 className="w-4 h-4 text-emerald-600" /> Temas Mais Citados nos Elogios
+            </h3>
+            <div className="flex flex-wrap gap-2 pt-2">
+              <span className="px-3 py-1 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-lg border border-emerald-200">Pão com Linguiça (420 citções)</span>
+              <span className="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-semibold rounded-lg border border-blue-200">Beija-flor Pontua (310 citações)</span>
+              <span className="px-3 py-1 bg-amber-50 text-amber-700 text-xs font-semibold rounded-lg border border-amber-200">Atendimento Pista (280 citações)</span>
+              <span className="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg border border-slate-200">Chuveiro Limpo (190 citações)</span>
             </div>
-            <h3 className="font-bold text-slate-800">Fidelidade Beija-flor Pontua</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              72% das avaliações positivas no Posto Lourdes mencionam o uso do app Beija-flor Pontua para acúmulo de pontos no abastecimento.
-            </p>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-              <Zap className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-slate-800">Otimização SEO Local</h3>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Todas as 27 unidades do grupo possuem perfis otimizados com endereço, horários e categorias no Google Meu Negócio.
-            </p>
           </div>
         </div>
       </div>
