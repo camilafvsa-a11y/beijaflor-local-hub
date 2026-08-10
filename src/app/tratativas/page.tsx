@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
-  ArrowLeft, Search, Sparkles, Send, Edit3, Copy, Check, MessageSquare, Clock, Filter, AlertCircle, ShieldCheck 
+  ArrowLeft, Search, Sparkles, Send, Edit3, Copy, Check 
 } from 'lucide-react';
 
 const mockTratativas = [
@@ -43,22 +43,18 @@ export default function TratativasPage() {
     <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-800">
       <div className="max-w-7xl mx-auto space-y-6">
         
-        {/* Top Navbar */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-xs hover:bg-slate-50 transition-all">
-            <ArrowLeft className="w-3 h-3 text-slate-500" /> Voltar ao Dashboard
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-sm hover:bg-slate-50 transition-all">
+            <ArrowLeft className="w-3.5 h-3.5 text-slate-500" /> Voltar ao Dashboard
           </Link>
           <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Gestão de Chamados</span>
         </div>
 
-        {/* Hero Header */}
         <div className="bg-gradient-to-r from-[#0f4c81] via-slate-900 to-slate-900 text-white p-8 rounded-3xl shadow-sm relative overflow-hidden">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
-              <div className="flex items-center gap-2">
-                <span className="bg-white/10 backdrop-blur-md text-blue-200 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/10">
-                  Central de Resolução
-                </span>
+              <span className="bg-white/10 backdrop-blur-sm text-blue-200 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/10">
+                Central de Resolução
               </span>
               <h1 className="text-2xl font-black tracking-tight mt-2">Tratativas de Ocorrências</h1>
               <p className="text-slate-300 text-xs mt-1.5 max-w-xl leading-relaxed">
@@ -67,11 +63,11 @@ export default function TratativasPage() {
             </div>
 
             <div className="flex gap-3">
-              <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 text-center">
+              <div className="bg-white/10 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/10 text-center">
                 <span className="text-[10px] uppercase font-bold text-blue-200 block">Abertas</span>
                 <span className="text-xl font-extrabold text-amber-300">{items.filter(i => i.status !== 'Concluída').length}</span>
               </div>
-              <div className="bg-white/10 backdrop-blur-md px-5 py-3 rounded-2xl border border-white/10 text-center">
+              <div className="bg-white/10 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/10 text-center">
                 <span className="text-[10px] uppercase font-bold text-blue-200 block">Concluídas</span>
                 <span className="text-xl font-extrabold text-emerald-400">{items.filter(i => i.status === 'Concluída').length}</span>
               </div>
@@ -79,8 +75,7 @@ export default function TratativasPage() {
           </div>
         </div>
 
-        {/* Filter & Search Bar */}
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
             <input
@@ -93,10 +88,9 @@ export default function TratativasPage() {
           </div>
         </div>
 
-        {/* Tratativas Cards */}
         <div className="space-y-4">
           {items.filter(i => i.unidade.toLowerCase().includes(searchTerm.toLowerCase()) || i.assunto.toLowerCase().includes(searchTerm.toLowerCase())).map((item) => (
-            <div key={item.id} className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs hover:shadow-md transition-all space-y-4">
+            <div key={item.id} className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm hover:shadow-md transition-all space-y-4">
               
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-slate-100 pb-4">
                 <div className="space-y-1">
@@ -119,11 +113,10 @@ export default function TratativasPage() {
                 </div>
               </div>
 
-              {/* Caixa da IA com Novo Visual Premium */}
               <div className="bg-slate-50/80 p-4 rounded-xl border border-slate-200/80 space-y-3">
                 <div className="flex justify-between items-center">
                   <span className="text-xs font-bold text-[#0f4c81] flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" /> Sugestão de Resposta IA (Parâmetros Grupo Beija-flor)
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" /> Sugestão de Resposta IA
                   </span>
 
                   <div className="flex items-center gap-3">
@@ -156,7 +149,7 @@ export default function TratativasPage() {
                     />
                     <div className="flex justify-end gap-2">
                       <button onClick={() => setEditingId(null)} className="text-xs px-3 py-1.5 font-semibold text-slate-500">Cancelar</button>
-                      <button onClick={() => handleSaveText(item.id)} className="text-xs px-4 py-1.5 bg-[#0f4c81] text-white font-semibold rounded-lg shadow-xs">Salvar Alteração</button>
+                      <button onClick={() => handleSaveText(item.id)} className="text-xs px-4 py-1.5 bg-[#0f4c81] text-white font-semibold rounded-lg shadow-sm">Salvar Alteração</button>
                     </div>
                   </div>
                 ) : (
@@ -168,7 +161,7 @@ export default function TratativasPage() {
                 <div className="flex items-center justify-end pt-1">
                   <button 
                     onClick={() => handleConcluir(item.id)}
-                    className="px-5 py-2.5 bg-[#0f4c81] text-white text-xs font-semibold rounded-xl hover:bg-blue-900 transition-all flex items-center gap-2 shadow-xs"
+                    className="px-5 py-2.5 bg-[#0f4c81] text-white text-xs font-semibold rounded-xl hover:bg-blue-900 transition-all flex items-center gap-2 shadow-sm"
                   >
                     <Send className="w-3.5 h-3.5" /> Publicar Resposta e Finalizar
                   </button>
