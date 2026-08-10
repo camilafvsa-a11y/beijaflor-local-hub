@@ -1,151 +1,151 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+import { 
+  Home, 
+  Building2, 
+  FileText, 
+  Star, 
+  ShieldCheck, 
+  Lightbulb, 
+  BarChart3,
+  CheckCircle2,
+  AlertTriangle,
+  Clock,
+  TrendingUp,
+  MapPin,
+  ExternalLink
+} from 'lucide-react';
 
-export default function HomePage() {
+export default function DashboardPage() {
+  const menuItems = [
+    { name: 'Início', href: '/', icon: Home, active: true },
+    { name: 'Unidades (27)', href: '/unidades', icon: Building2 },
+    { name: 'Tratativas', href: '/tratativas', icon: FileText },
+    { name: 'Avaliações', href: '/avaliacoes', icon: Star },
+    { name: 'Aprovações', href: '/aprovacoes', icon: ShieldCheck },
+    { name: 'Inteligência', href: '/inteligencia', icon: Lightbulb },
+    { name: 'Relatórios', href: '/relatorios', icon: BarChart3 },
+  ];
+
   return (
-    <div className="flex min-h-screen bg-slate-100 font-sans">
-      {/* Menu Lateral */}
-      <aside className="w-64 bg-white border-r border-slate-200 p-4 flex flex-col justify-between hidden md:flex">
+    <div className="flex min-h-screen bg-slate-50/50">
+      {/* Sidebar Lateral Nativas com Links */}
+      <aside className="w-64 bg-white border-r border-slate-200/80 min-h-screen p-5 flex flex-col justify-between shrink-0">
         <div>
-          {/* Logo / Header */}
-          <div className="mb-6">
-            <h1 className="text-xl font-bold text-[#0F4C81]">Beija-flor</h1>
-            <p className="text-xs text-slate-500">Local Hub — Gestão de Rede</p>
+          <div className="flex items-center gap-2.5 px-3 py-2 mb-6">
+            <div className="w-8 h-8 rounded-xl bg-[#0f4c81] text-white flex items-center justify-center font-bold text-sm shadow-sm">
+              BF
+            </div>
+            <div>
+              <h2 className="font-bold text-slate-900 text-sm leading-none">Grupo Beija-flor</h2>
+              <span className="text-[11px] text-slate-400 font-medium">Local Hub</span>
+            </div>
           </div>
 
-          {/* Campo de Busca */}
-          <div className="mb-6">
-            <input
-              type="text"
-              placeholder="Buscar unidade..."
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          {/* Links de Navegação */}
           <nav className="space-y-1">
-            <a
-              href="/"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-semibold text-white bg-[#0F4C81] rounded-lg"
-            >
-              <span>🏠</span>
-              <span>Início</span>
-            </a>
-            <a
-              href="/unidades"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <span>🏢</span>
-              <span>Unidades (27)</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <span>📋</span>
-              <span>Tratativas</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <span>⭐</span>
-              <span>Avaliações</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <span>🛡️</span>
-              <span>Aprovações</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <span>💡</span>
-              <span>Inteligência</span>
-            </a>
-            <a
-              href="#"
-              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-            >
-              <span>📊</span>
-              <span>Relatórios</span>
-            </a>
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className={`flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    item.active
+                      ? 'bg-[#0f4c81] text-white shadow-sm'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${item.active ? 'text-white' : 'text-slate-500'}`} />
+                  <span>{item.name}</span>
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
-        {/* Perfil do Usuário no Roda-pé da Sidebar */}
-        <div className="pt-4 border-t border-slate-200 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-blue-100 text-[#0F4C81] flex items-center justify-center font-bold text-xs">
-            PO
+        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/60">
+          <div className="flex items-center gap-2 text-emerald-600 text-xs font-semibold">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Google Maps Conectado
           </div>
-          <div>
-            <p className="text-xs font-bold text-slate-800">Product Owner</p>
-            <p className="text-[10px] text-slate-500">Administrador</p>
-          </div>
+          <p className="text-[11px] text-slate-400 mt-1">27 Unidades sincronizadas</p>
         </div>
       </aside>
 
-      {/* Conteúdo Principal */}
-      <main className="flex-1 p-8">
-        <div className="mb-6 bg-amber-50 border border-amber-200 text-amber-800 text-xs px-4 py-2 rounded-lg font-medium">
-          ⚠️ AMBIENTE DE TESTE — PRODUCT OWNER EXCLUSIVE (HOMOLOGAÇÃO FASE 0)
-        </div>
-
-        <div className="mb-8 flex justify-between items-center">
+      {/* Conteúdo do Dashboard */}
+      <main className="flex-1 p-8 space-y-8 max-w-7xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">O que precisa da sua atenção hoje</h2>
-            <p className="text-sm text-slate-500">Resumo de pendências da rede</p>
+            <h1 className="text-2xl font-bold text-slate-900">Visão Geral da Rede</h1>
+            <p className="text-slate-500 text-sm mt-1">
+              Gerenciamento centralizado de presença digital e reputação das 27 unidades.
+            </p>
           </div>
-          <a
+          <Link
             href="/unidades"
-            className="bg-[#0F4C81] hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
+            className="bg-[#0f4c81] text-white px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-blue-900 transition-all shadow-sm text-center"
           >
-            Ver Todas as Unidades 🏢
-          </a>
+            Ver Todas as 27 Unidades →
+          </Link>
         </div>
 
-        {/* Cards de Métricas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-            <span className="text-2xl font-bold text-red-600">1</span>
-            <p className="text-xs font-semibold text-slate-500 mt-1">Tratativa Atrasada</p>
-          </div>
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-            <span className="text-2xl font-bold text-amber-600">3</span>
-            <p className="text-xs font-semibold text-slate-500 mt-1">Aprovações Pendentes</p>
-          </div>
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-            <span className="text-2xl font-bold text-blue-600">2</span>
-            <p className="text-xs font-semibold text-slate-500 mt-1">Para Validar</p>
-          </div>
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-            <span className="text-2xl font-bold text-emerald-600">96.5%</span>
-            <p className="text-xs font-semibold text-slate-500 mt-1">SLA no Prazo</p>
-          </div>
+        {/* Métricas Rápidas */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <Link href="/unidades" className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
+            <span className="text-xs text-slate-400 font-medium">Unidades Ativas</span>
+            <div className="text-2xl font-bold text-slate-900 mt-1">27</div>
+            <span className="text-[11px] text-emerald-600 font-medium">● 100% Sincronizadas</span>
+          </Link>
+
+          <Link href="/tratativas" className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
+            <span className="text-xs text-slate-400 font-medium">Tratativas Pendentes</span>
+            <div className="text-2xl font-bold text-amber-600 mt-1">5</div>
+            <span className="text-[11px] text-amber-600 font-medium">Aguardando resposta</span>
+          </Link>
+
+          <Link href="/avaliacoes" className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
+            <span className="text-xs text-slate-400 font-medium">Média de Avaliações</span>
+            <div className="text-2xl font-bold text-slate-900 mt-1 flex items-center gap-1">
+              4.8 <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+            </div>
+            <span className="text-[11px] text-emerald-600 font-medium">+0.2 este mês</span>
+          </Link>
+
+          <Link href="/aprovacoes" className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
+            <span className="text-xs text-slate-400 font-medium">Aprovações de Perfil</span>
+            <div className="text-2xl font-bold text-blue-600 mt-1">3</div>
+            <span className="text-[11px] text-slate-400 font-medium">Edições pendentes</span>
+          </Link>
         </div>
 
-        {/* Prioridades */}
-        <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-          <h3 className="text-lg font-bold text-slate-800 mb-4">Minhas Prioridades do Dia</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+        {/* Atalhos para Abas do Sistema */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
+          <h2 className="text-base font-bold text-slate-900 mb-4">Acesso Rápido aos Módulos</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Link href="/tratativas" className="p-4 rounded-xl border border-slate-200 hover:border-blue-500 hover:bg-blue-50/30 transition-all flex items-center gap-3">
+              <FileText className="w-5 h-5 text-blue-600" />
               <div>
-                <p className="font-semibold text-sm text-slate-800">Posto Beija-flor | Canal Barreiro</p>
-                <p className="text-xs text-slate-500">Reclamação de demora no atendimento do pátio</p>
+                <h3 className="text-xs font-bold text-slate-800">Tratativas</h3>
+                <p className="text-[11px] text-slate-500">Gerenciar chamados e suporte</p>
               </div>
-              <span className="text-xs font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-md">Vencido há 15 min</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
+            </Link>
+
+            <Link href="/avaliacoes" className="p-4 rounded-xl border border-slate-200 hover:border-amber-500 hover:bg-amber-50/30 transition-all flex items-center gap-3">
+              <Star className="w-5 h-5 text-amber-500" />
               <div>
-                <p className="font-semibold text-sm text-slate-800">Churrascaria Beija-flor | Juatuba</p>
-                <p className="text-xs text-slate-500">Avaliação 3★ aguardando aprovação de resposta</p>
+                <h3 className="text-xs font-bold text-slate-800">Avaliações</h3>
+                <p className="text-[11px] text-slate-500">Respostas do Google Maps</p>
               </div>
-              <span className="text-xs font-bold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-md">Prazo: Hoje 18:00</span>
-            </div>
+            </Link>
+
+            <Link href="/relatorios" className="p-4 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/30 transition-all flex items-center gap-3">
+              <BarChart3 className="w-5 h-5 text-emerald-600" />
+              <div>
+                <h3 className="text-xs font-bold text-slate-800">Relatórios</h3>
+                <p className="text-[11px] text-slate-500">Métricas e performance</p>
+              </div>
+            </Link>
           </div>
         </div>
       </main>
