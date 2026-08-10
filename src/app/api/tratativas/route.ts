@@ -28,19 +28,35 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
+    // Garante que o ID e datas sejam gerados automaticamente se ausentes
+    const payload = {
+      codigo: body.codigo || `TR-${Math.floor(100 + Math.random() * 900)}`,
+      origem: body.origem,
+      unidade: body.unidade,
+      cliente: body.cliente,
+      mensagem: body.mensagem,
+      resposta_ia: body.resposta_ia,
+      status: body.status || 'Pendente'
+    };
+
     const res = await fetch(`${supabaseUrl}/rest/v1/tratativas`, {
       method: 'POST',
       headers: {
         'apikey': supabaseKey,
         'Authorization': `Bearer ${supabaseKey}`,
         'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
+        'Prefer': 'return=minimal'
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify(payload)
     });
 
-    const data = await res.json();
-    return NextResponse.json(data);
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Erro na resposta do Supabase:', errText);
+      return NextResponse.json({ error: errText }, { status: res.status });
+    }
+
+    return NextResponse.json({ success: true, item: payload });
   } catch (err) {
     return NextResponse.json({ error: 'Erro ao salvar tratativa' }, { status: 500 });
   }
