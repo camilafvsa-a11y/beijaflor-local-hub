@@ -26,7 +26,20 @@ export default function DashboardHome() {
           </div>
 
           {/* Abas do Sistema */}
-          <nav className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+         <nav className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+            <Link href="/" className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-[#0f4c81] shadow-sm">
+              📊 Dashboard
+            </Link>
+            <Link href="/avaliacoes" className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900">
+              ⭐ Avaliações
+            </Link>
+            <Link href="/tratativas" className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900">
+              🚨 Tratativas
+            </Link>
+            <Link href="/relatorios" className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900">
+              📈 Relatórios & Insights
+            </Link>
+          </nav>
             <Link 
               href="/" 
               className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-[#0f4c81] shadow-sm transition-all"
