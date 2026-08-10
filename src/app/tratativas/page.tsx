@@ -42,7 +42,9 @@ export default function TratativasPage() {
       const res = await fetch('/api/tratativas');
       if (res.ok) {
         const data = await res.json();
-        setTratativas(Array.isArray(data) ? data : []);
+        if (Array.isArray(data) && data.length > 0) {
+          setTratativas(data);
+        }
       }
     } catch (err) {
       console.error('Erro ao carregar tratativas:', err);
@@ -107,14 +109,14 @@ export default function TratativasPage() {
     setTratativas(tratativas.map(t => (t.id === id || t.codigo === id) ? { ...t, status: 'Concluída' } : t));
   };
 
-  const handleCriarTratativa = const handleCriarTratativa = async (e: React.FormEvent) => {
+  const handleCriarTratativa = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!cliente || !mensagem) return;
 
     setSaving(true);
 
     const novaTratativa: Tratativa = {
-      id: `temp-${Date.now()}`,
+      id: `manual-${Date.now()}`,
       codigo: `TR-${Math.floor(100 + Math.random() * 900)}`,
       origem,
       unidade,
@@ -124,58 +126,21 @@ export default function TratativasPage() {
       status: 'Pendente'
     };
 
-    try {
-      // 1. Adiciona o item permanentemente na lista da tela
-      setTratativas(prev => [novaTratativa, ...prev]);
-      setSearchTerm('');
-      setShowModal(false);
-      setCliente('');
-      setMensagem('');
+    // Fixa na tela na hora
+    setTratativas(prev => [novaTratativa, ...prev]);
+    setSearchTerm('');
+    setShowModal(false);
+    setCliente('');
+    setMensagem('');
 
-      // 2. Envia para o Supabase em segundo plano (sem recarregar a lista do zero)
+    try {
       await fetch('/api/tratativas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novaTratativa)
       });
     } catch (err) {
-      console.error('Erro ao enviar para o banco:', err);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-    const novaTratativa: Tratativa = {
-      codigo: `TR-${Math.floor(100 + Math.random() * 900)}`,
-      origem,
-      unidade,
-      cliente,
-      mensagem,
-      resposta_ia: `Olá ${cliente}, recebemos sua manifestação referente ao ${unidade}. Nossa equipe de gestão já foi notificada para averiguar o ocorrido e tomar as devidas providências. Agradecemos por nos ajudar a melhorar nossos serviços!`,
-      status: 'Pendente'
-    };
-
-    try {
-      // 1. Atualiza a tela imediatamente (Optimistic UI)
-      setTratativas(prev => [novaTratativa, ...prev]);
-      setSearchTerm('');
-      setShowModal(false);
-
-      // 2. Envia para o Supabase
-      await fetch('/api/tratativas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(novaTratativa)
-      });
-
-      // Limpa os campos do formulário
-      setCliente('');
-      setMensagem('');
-
-      // Recarrega do banco
-      await loadTratativas();
-    } catch (err) {
-      console.error('Erro ao salvar no Supabase:', err);
+      console.error('Erro ao salvar no banco:', err);
     } finally {
       setSaving(false);
     }
