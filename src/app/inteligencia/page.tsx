@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Lightbulb, TrendingUp, TrendingDown, Star, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Lightbulb, TrendingUp, TrendingDown, Star, AlertTriangle, Target, BarChart2 } from 'lucide-react';
 
 const contasAnalise = [
   { id: 1, unidade: 'Posto Beija-flor | Vespasiano (MG-424)', notaAnterior: 4.6, notaAtual: 4.8, status: 'subiu', avaliacoes: 312 },
@@ -14,29 +14,41 @@ const contasAnalise = [
 
 export default function InteligenciaPage() {
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans">
+    <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-800">
       <div className="max-w-7xl mx-auto space-y-6">
+        
+        {/* Top Navbar */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-xs">
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-xs hover:bg-slate-50 transition-all">
             <ArrowLeft className="w-3.5 h-3.5 text-slate-500" /> Voltar ao Dashboard
           </Link>
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Inteligência Estratégica</span>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs">
-          <h1 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Lightbulb className="w-5 h-5 text-amber-500" /> Inteligência de Desempenho Conta por Conta
-          </h1>
-          <p className="text-slate-500 text-xs mt-1">Monitoramento individual de variação de notas nas 27 unidades do Grupo Beija-flor.</p>
+        {/* Hero Header */}
+        <div className="bg-gradient-to-r from-[#0f4c81] via-slate-900 to-slate-900 text-white p-8 rounded-3xl shadow-sm relative overflow-hidden">
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div>
+              <span className="bg-white/10 backdrop-blur-md text-amber-300 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/10">
+                Analytics & Diagnóstico
+              </span>
+              <h1 className="text-2xl font-black tracking-tight mt-2">Inteligência por Conta</h1>
+              <p className="text-slate-300 text-xs mt-1.5 max-w-xl leading-relaxed">
+                Diagnóstico preditivo e análise de variação de reputação individual de cada uma das 27 unidades do Grupo Beija-flor.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Alerta de Contas em Queda */}
-        <div className="bg-red-50/60 border border-red-200/80 p-5 rounded-2xl space-y-2">
-          <h3 className="text-sm font-bold text-red-900 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-red-600" /> Unidades que Exigem Atenção (Queda de Nota no Mês)
-          </h3>
-          <p className="text-xs text-red-700 leading-relaxed">
-            Identificamos queda pontual de desempenho em 2 unidades neste mês. Recomenda-se verificar as tratativas pendentes.
-          </p>
+        <div className="bg-red-50/80 border border-red-200 p-5 rounded-2xl flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+          <div>
+            <h3 className="text-xs font-bold text-red-900 uppercase tracking-wider">Unidades com Queda de Nota Média no Mês</h3>
+            <p className="text-xs text-red-700 leading-relaxed mt-1">
+              Identificamos variação negativa nas unidades **Posto Morro Alto** e **Posto San Genaro**. O diagnóstico da IA indica necessidade de reforçar a operação da pista e caixa.
+            </p>
+          </div>
         </div>
 
         {/* Tabela de Inteligência por Conta */}
@@ -60,12 +72,12 @@ export default function InteligenciaPage() {
                   <td className="p-4 font-bold text-slate-900">{c.notaAtual} ★</td>
                   <td className="p-4">
                     {c.status === 'subiu' && (
-                      <span className="inline-flex items-center gap-1 text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md">
+                      <span className="inline-flex items-center gap-1 text-emerald-700 font-bold bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-200">
                         <TrendingUp className="w-3 h-3" /> +0.2
                       </span>
                     )}
                     {c.status === 'caiu' && (
-                      <span className="inline-flex items-center gap-1 text-red-700 font-bold bg-red-50 px-2 py-0.5 rounded-md">
+                      <span className="inline-flex items-center gap-1 text-red-700 font-bold bg-red-50 px-2.5 py-0.5 rounded-md border border-red-200">
                         <TrendingDown className="w-3 h-3" /> -0.2
                       </span>
                     )}
@@ -76,9 +88,9 @@ export default function InteligenciaPage() {
                   <td className="p-4 font-medium text-slate-700">{c.avaliacoes} comentários</td>
                   <td className="p-4">
                     {c.alerta ? (
-                      <span className="text-red-600 font-semibold text-[11px]">{c.alerta}</span>
+                      <span className="text-red-600 font-bold text-[11px]">{c.alerta}</span>
                     ) : (
-                      <span className="text-emerald-600 font-semibold text-[11px]">Operação Estável</span>
+                      <span className="text-emerald-600 font-bold text-[11px]">Operação Estável</span>
                     )}
                   </td>
                 </tr>
