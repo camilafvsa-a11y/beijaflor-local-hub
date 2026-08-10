@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Star, MapPin, Sparkles, Send } from 'lucide-react';
+import { ArrowLeft, Star, MapPin, Sparkles, Send, Edit3, Check, Copy } from 'lucide-react';
 
 const mockReviews = [
   { id: 1, unidade: 'Churrascaria Beija-flor | Sabará (KM13)', autor: 'Guilherme Augusto', nota: 5, comentario: 'Excelente atendimento e o famoso pão com linguiça é imbatível! Parada obrigatória na BR-381.', data: '10/08/2026', respostaIA: 'Olá Guilherme! Agradecemos demais pelo carinho. Nosso pão com linguiça é feito com muito cuidado para ser essa parada tradicional e especial. Volte sempre ao Grupo Beija-flor!', respondido: false },
@@ -12,6 +12,25 @@ const mockReviews = [
 
 export default function AvaliacoesPage() {
   const [reviews, setReviews] = useState(mockReviews);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editedText, setEditedText] = useState('');
+  const [copiedId, setCopiedId] = useState<number | null>(null);
+
+  const handleEdit = (id: number, currentText: string) => {
+    setEditingId(id);
+    setEditedText(currentText);
+  };
+
+  const handleSaveText = (id: number) => {
+    setReviews(reviews.map(r => r.id === id ? { ...r, respostaIA: editedText } : r));
+    setEditingId(null);
+  };
+
+  const handleCopy = (id: number, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   const handleResponder = (id: number) => {
     setReviews(reviews.map(r => r.id === id ? { ...r, respondido: true } : r));
@@ -21,6 +40,7 @@ export default function AvaliacoesPage() {
     <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-800">
       <div className="max-w-7xl mx-auto space-y-6">
         
+        {/* Top Navbar */}
         <div className="flex items-center justify-between">
           <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 bg-white px-4 py-2.5 rounded-2xl border border-slate-200/80 shadow-sm hover:bg-slate-50 transition-all">
             <ArrowLeft className="w-4 h-4 text-slate-500" /> Voltar ao Dashboard
@@ -28,6 +48,7 @@ export default function AvaliacoesPage() {
           <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Gestão de Reputação</span>
         </div>
 
+        {/* Hero Header */}
         <div className="bg-gradient-to-r from-[#0f4c81] via-slate-900 to-slate-900 text-white p-8 rounded-3xl shadow-sm relative overflow-hidden">
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
@@ -50,6 +71,7 @@ export default function AvaliacoesPage() {
           </div>
         </div>
 
+        {/* Indicadores de Volume */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Volume do Mês Atual (Agosto/2026)</span>
@@ -66,6 +88,7 @@ export default function AvaliacoesPage() {
           </div>
         </div>
 
+        {/* Feed de Avaliações */}
         <div className="space-y-5">
           {reviews.map((r) => (
             <div key={r.id} className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all space-y-4">
@@ -86,11 +109,48 @@ export default function AvaliacoesPage() {
                 "{r.comentario}"
               </p>
 
-              <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 space-y-2">
-                <span className="text-sm font-bold text-[#0f4c81] flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" /> Sugestão de Resposta IA
-                </span>
-                <p className="text-sm text-slate-600 font-medium leading-relaxed italic">"{r.respostaIA}"</p>
+              <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-bold text-[#0f4c81] flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" /> Sugestão de Resposta IA
+                  </span>
+
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => handleCopy(r.id, r.respostaIA)}
+                      className="text-xs text-slate-600 hover:text-slate-900 flex items-center gap-1.5 font-semibold transition-colors"
+                    >
+                      {copiedId === r.id ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                      {copiedId === r.id ? 'Copiado!' : 'Copiar Texto'}
+                    </button>
+
+                    {editingId !== r.id && !r.respondido && (
+                      <button
+                        onClick={() => handleEdit(r.id, r.respostaIA)}
+                        className="text-xs text-[#0f4c81] hover:underline flex items-center gap-1.5 font-semibold"
+                      >
+                        <Edit3 className="w-4 h-4" /> Editar Resposta
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {editingId === r.id ? (
+                  <div className="space-y-3">
+                    <textarea
+                      rows={3}
+                      value={editedText}
+                      onChange={(e) => setEditedText(e.target.value)}
+                      className="w-full p-3.5 bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0f4c81]/30"
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button onClick={() => setEditingId(null)} className="text-xs px-3.5 py-2 font-semibold text-slate-500">Cancelar</button>
+                      <button onClick={() => handleSaveText(r.id)} className="text-xs px-4 py-2 bg-[#0f4c81] text-white font-semibold rounded-xl shadow-sm">Salvar Alteração</button>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-sm text-slate-600 font-medium leading-relaxed italic">"{r.respostaIA}"</p>
+                )}
               </div>
 
               <div className="flex justify-end pt-1">
