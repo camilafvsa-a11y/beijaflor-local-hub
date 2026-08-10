@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Star, MapPin, Sparkles, Send, Edit3, Check, Copy } from 'lucide-react';
+import { ArrowLeft, Star, MapPin, Sparkles, Send, Edit3, Check, Copy, Wand2, Loader2 } from 'lucide-react';
 
 interface Review {
   id: number | string;
@@ -26,6 +26,10 @@ export default function AvaliacoesPage() {
   const [editingId, setEditingId] = useState<number | string | null>(null);
   const [editedText, setEditedText] = useState('');
   const [copiedId, setCopiedId] = useState<number | string | null>(null);
+
+  // Estados para controle do Prompt Customizado da IA
+  const [customPrompt, setCustomPrompt] = useState<{ [key: string]: string }>({});
+  const [loadingAi, setLoadingAi] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     async function loadReviews() {
@@ -58,6 +62,37 @@ export default function AvaliacoesPage() {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleRegenerateWithAi = async (review: Review) => {
+    const key = String(review.id);
+    const instrucao = customPrompt[key] || '';
+
+    setLoadingAi(prev => ({ ...prev, [key]: true }));
+
+    try {
+      const res = await fetch('/api/ai-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cliente: review.autor,
+          mensagem: review.comentario,
+          unidade: review.unidade,
+          instrucao
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.resposta) {
+          setReviews(prev => prev.map(r => r.id === review.id ? { ...r, respostaIA: data.resposta } : r));
+        }
+      }
+    } catch (err) {
+      console.error('Erro ao chamar IA:', err);
+    } finally {
+      setLoadingAi(prev => ({ ...prev, [key]: false }));
+    }
   };
 
   const handleResponder = async (id: number | string) => {
@@ -127,85 +162,113 @@ export default function AvaliacoesPage() {
 
         {/* Feed de Avaliações */}
         <div className="space-y-5">
-          {reviews.map((r) => (
-            <div key={r.id} className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all space-y-4">
-              <div className="flex justify-between items-start border-b border-slate-100 pb-4">
-                <div>
-                  <h3 className="font-bold text-slate-900 flex items-center gap-2 text-sm">
-                    <MapPin className="w-4 h-4 text-[#0f4c81]" /> {r.unidade}
-                  </h3>
-                  <span className="text-xs text-slate-400 mt-1 block">{r.autor} • {r.data}</span>
-                </div>
-                <div className="flex items-center gap-1.5 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200/60">
-                  <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                  <span className="text-sm font-bold text-amber-800">{r.nota}.0</span>
-                </div>
-              </div>
+          {reviews.map((r) => {
+            const key = String(r.id);
+            const isAiLoading = loadingAi[key] || false;
 
-              <p className="text-sm text-slate-700 font-medium leading-relaxed bg-slate-50/50 p-4 rounded-2xl border border-slate-100 italic">
-                "{r.comentario}"
-              </p>
-
-              <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-bold text-[#0f4c81] flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" /> Sugestão de Resposta IA
-                  </span>
-
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => handleCopy(r.id, r.respostaIA)}
-                      className="text-xs text-slate-600 hover:text-slate-900 flex items-center gap-1.5 font-semibold transition-colors"
-                    >
-                      {copiedId === r.id ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                      {copiedId === r.id ? 'Copiado!' : 'Copiar Texto'}
-                    </button>
-
-                    {editingId !== r.id && !r.respondido && (
-                      <button
-                        onClick={() => handleEdit(r.id, r.respostaIA)}
-                        className="text-xs text-[#0f4c81] hover:underline flex items-center gap-1.5 font-semibold"
-                      >
-                        <Edit3 className="w-4 h-4" /> Editar Resposta
-                      </button>
-                    )}
+            return (
+              <div key={r.id} className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all space-y-4">
+                <div className="flex justify-between items-start border-b border-slate-100 pb-4">
+                  <div>
+                    <h3 className="font-bold text-slate-900 flex items-center gap-2 text-sm">
+                      <MapPin className="w-4 h-4 text-[#0f4c81]" /> {r.unidade}
+                    </h3>
+                    <span className="text-xs text-slate-400 mt-1 block">{r.autor} • {r.data}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200/60">
+                    <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    <span className="text-sm font-bold text-amber-800">{r.nota}.0</span>
                   </div>
                 </div>
 
-                {editingId === r.id ? (
-                  <div className="space-y-3">
-                    <textarea
-                      rows={3}
-                      value={editedText}
-                      onChange={(e) => setEditedText(e.target.value)}
-                      className="w-full p-3.5 bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0f4c81]/30"
-                    />
-                    <div className="flex justify-end gap-2">
-                      <button onClick={() => setEditingId(null)} className="text-xs px-3.5 py-2 font-semibold text-slate-500">Cancelar</button>
-                      <button onClick={() => handleSaveText(r.id)} className="text-xs px-4 py-2 bg-[#0f4c81] text-white font-semibold rounded-xl shadow-sm">Salvar Alteração</button>
+                <p className="text-sm text-slate-700 font-medium leading-relaxed bg-slate-50/50 p-4 rounded-2xl border border-slate-100 italic">
+                  "{r.comentario}"
+                </p>
+
+                {/* Box de Resposta e Controle de IA */}
+                <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-[#0f4c81] flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400" /> Sugestão de Resposta IA
+                    </span>
+
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => handleCopy(r.id, r.respostaIA)}
+                        className="text-xs text-slate-600 hover:text-slate-900 flex items-center gap-1.5 font-semibold transition-colors"
+                      >
+                        {copiedId === r.id ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                        {copiedId === r.id ? 'Copiado!' : 'Copiar Texto'}
+                      </button>
+
+                      {editingId !== r.id && !r.respondido && (
+                        <button
+                          onClick={() => handleEdit(r.id, r.respostaIA)}
+                          className="text-xs text-[#0f4c81] hover:underline flex items-center gap-1.5 font-semibold"
+                        >
+                          <Edit3 className="w-4 h-4" /> Editar Texto
+                        </button>
+                      )}
                     </div>
                   </div>
-                ) : (
-                  <p className="text-sm text-slate-600 font-medium leading-relaxed italic">"{r.respostaIA}"</p>
-                )}
-              </div>
 
-              <div className="flex justify-end pt-1">
-                {r.respondido ? (
-                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-200 flex items-center gap-1.5">
-                    ✓ Publicado no Google Maps
-                  </span>
-                ) : (
-                  <button
-                    onClick={() => handleResponder(r.id)}
-                    className="px-5 py-3 bg-[#0f4c81] text-white text-xs font-bold rounded-2xl hover:bg-blue-900 transition-all flex items-center gap-2 shadow-sm"
-                  >
-                    <Send className="w-4 h-4" /> Aprovar e Publicar no Google
-                  </button>
-                )}
+                  {/* Edição Direta ou Exibição da Resposta */}
+                  {editingId === r.id ? (
+                    <div className="space-y-3">
+                      <textarea
+                        rows={3}
+                        value={editedText}
+                        onChange={(e) => setEditedText(e.target.value)}
+                        className="w-full p-3.5 bg-white border border-slate-300 rounded-xl text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0f4c81]/30"
+                      />
+                      <div className="flex justify-end gap-2">
+                        <button onClick={() => setEditingId(null)} className="text-xs px-3.5 py-2 font-semibold text-slate-500">Cancelar</button>
+                        <button onClick={() => handleSaveText(r.id)} className="text-xs px-4 py-2 bg-[#0f4c81] text-white font-semibold rounded-xl shadow-sm">Salvar Alteração</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-slate-600 font-medium leading-relaxed italic">"{r.respostaIA}"</p>
+                  )}
+
+                  {/* Comando/Prompt de Refinamento da IA */}
+                  {!r.respondido && editingId !== r.id && (
+                    <div className="pt-2 border-t border-slate-200/60 flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+                      <input
+                        type="text"
+                        placeholder="Instrua a IA (ex: 'Seja mais formal', 'Peça desculpas', 'Mencione o Beija-flor Pontua')..."
+                        value={customPrompt[key] || ''}
+                        onChange={(e) => setCustomPrompt({ ...customPrompt, [key]: e.target.value })}
+                        className="flex-1 px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f4c81]/20"
+                      />
+                      <button
+                        onClick={() => handleRegenerateWithAi(r)}
+                        disabled={isAiLoading}
+                        className="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-50"
+                      >
+                        {isAiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wand2 className="w-3.5 h-3.5 text-amber-400" />}
+                        {isAiLoading ? 'Gerando...' : 'Reescrever com IA'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex justify-end pt-1">
+                  {r.respondido ? (
+                    <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-4 py-2 rounded-xl border border-emerald-200 flex items-center gap-1.5">
+                      ✓ Publicado no Google Maps
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => handleResponder(r.id)}
+                      className="px-5 py-3 bg-[#0f4c81] text-white text-xs font-bold rounded-2xl hover:bg-blue-900 transition-all flex items-center gap-2 shadow-sm"
+                    >
+                      <Send className="w-4 h-4" /> Aprovar e Publicar no Google
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
       </div>
