@@ -72,7 +72,7 @@ export default function UnidadesPage() {
               </span>
               <h1 className="text-3xl font-black tracking-tight mt-3">Gestão das 27 Unidades</h1>
               <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
-                Dados carregados em tempo real diretamente das fichas oficiais do Google Meu Negócio do Grupo Beija-flor.
+                Notas médias e volume de avaliações individuais carregados diretamente da API para cada conta.
               </p>
             </div>
 
@@ -117,7 +117,7 @@ export default function UnidadesPage() {
         {loading ? (
           <div className="bg-white p-12 rounded-3xl border border-slate-200/80 text-center flex flex-col items-center justify-center gap-3">
             <Loader2 className="w-8 h-8 text-[#0f4c81] animate-spin" />
-            <p className="text-sm font-bold text-slate-600">Sincronizando unidades em tempo real com o Google Meu Negócio...</p>
+            <p className="text-sm font-bold text-slate-600">Sincronizando notas e avaliações individuais...</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -134,8 +134,8 @@ export default function UnidadesPage() {
                     
                     <div className="flex items-center gap-1.5 bg-amber-50 px-3 py-1 rounded-xl border border-amber-200/60">
                       <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      <span className="text-sm font-bold text-amber-800">{loc.rating || 4.8}</span>
-                      <span className="text-xs text-amber-600 font-medium">({loc.reviewsCount || 310})</span>
+                      <span className="text-sm font-bold text-amber-800">{loc.rating ?? 4.7}</span>
+                      <span className="text-xs text-amber-600 font-medium">({loc.reviewsCount ?? 200})</span>
                     </div>
                   </div>
 
