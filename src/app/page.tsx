@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Star, MessageSquare, AlertTriangle, ArrowRight, Building2, Smartphone, MessageCircle, MapPin } from 'lucide-react';
+import { Star, ArrowRight, Building2, Smartphone, MessageCircle, MapPin, LayoutDashboard, MessageSquareText, ShieldAlert } from 'lucide-react';
 
 export default function DashboardHome() {
-  const [stats, setStats] = useState({
+  const [stats] = useState({
     totalGoogle: 142,
     totalCanalCliente: 48,
     totalWhatsApp: 19,
@@ -13,35 +13,53 @@ export default function DashboardHome() {
   });
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-800">
-      <div className="max-w-7xl mx-auto space-y-8">
-        
-        {/* Header Principal */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-6">
-          <div>
-            <span className="text-xs font-bold text-[#0f4c81] uppercase tracking-widest">Grupo Beija-flor</span>
-            <h1 className="text-3xl font-black text-slate-900 tracking-tight mt-1">Beija-flor Local Hub</h1>
-            <p className="text-sm text-slate-500 mt-1">Gestão centralizada de reputação e ocorrências das 27 unidades.</p>
-          </div>
-          
+    <div className="min-h-screen bg-[#f8fafc] font-sans text-slate-800">
+      
+      {/* Top Navigation Bar com Abas */}
+      <header className="bg-white border-b border-slate-200/80 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-6 md:px-10 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/avaliacoes" className="px-4 py-2.5 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-50 transition-all shadow-sm">
-              Ver Avaliações
-            </Link>
-            <Link href="/tratativas" className="px-4 py-2.5 bg-[#0f4c81] text-white font-bold text-xs rounded-xl hover:bg-blue-900 transition-all shadow-sm">
-              Ver Tratativas
-            </Link>
+            <div className="w-8 h-8 rounded-xl bg-[#0f4c81] flex items-center justify-center text-white font-black text-xs shadow-sm">
+              BF
+            </div>
+            <span className="font-extrabold text-slate-900 tracking-tight text-sm">Beija-flor Local Hub</span>
           </div>
-        </div>
 
-        {/* Métrica Geral */}
+          {/* Abas do Sistema */}
+          <nav className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+            <Link 
+              href="/" 
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-[#0f4c81] shadow-sm transition-all"
+            >
+              <LayoutDashboard className="w-3.5 h-3.5" /> Dashboard
+            </Link>
+            <Link 
+              href="/avaliacoes" 
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all"
+            >
+              <MessageSquareText className="w-3.5 h-3.5" /> Avaliações
+            </Link>
+            <Link 
+              href="/tratativas" 
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition-all"
+            >
+              <ShieldAlert className="w-3.5 h-3.5" /> Tratativas
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      {/* Conteúdo do Dashboard */}
+      <main className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
+        
+        {/* Banner Geral */}
         <div className="bg-slate-900 text-white p-8 rounded-3xl shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
             <span className="bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-amber-400/30">
               Visão Consolidada da Rede
             </span>
-            <h2 className="text-2xl font-black mt-3">Reputação e Entrada de Feedbacks</h2>
-            <p className="text-slate-300 text-sm mt-1">Compilado geral de entradas registradas no mês atual.</p>
+            <h1 className="text-2xl font-black mt-3">Reputação e Entrada de Feedbacks</h1>
+            <p className="text-slate-300 text-sm mt-1">Compilado geral de entradas registradas nas 27 unidades do Grupo Beija-flor.</p>
           </div>
 
           <div className="bg-white/10 backdrop-blur-sm px-6 py-4 rounded-2xl border border-white/10 text-center shrink-0">
@@ -55,13 +73,13 @@ export default function DashboardHome() {
 
         {/* Compilado por Origem de Entrada */}
         <div>
-          <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+          <h2 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
             <Building2 className="w-5 h-5 text-[#0f4c81]" /> Compilado de Entradas por Origem
-          </h3>
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* Origem: Google Maps */}
+            {/* Google Maps */}
             <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4 hover:shadow-md transition-all">
               <div className="flex items-center justify-between">
                 <div className="p-3 bg-blue-50 rounded-2xl text-[#0f4c81]">
@@ -75,11 +93,11 @@ export default function DashboardHome() {
               </div>
               <p className="text-xs text-slate-500 leading-relaxed">Avaliações públicas consolidadas das 27 fichas com resposta automatizada via IA.</p>
               <Link href="/avaliacoes" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0f4c81] hover:underline pt-2">
-                Gerenciar Avaliações <ArrowRight className="w-3.5 h-3.5" />
+                Ir para Avaliações <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            {/* Origem: Canal do Cliente */}
+            {/* Canal do Cliente */}
             <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4 hover:shadow-md transition-all">
               <div className="flex items-center justify-between">
                 <div className="p-3 bg-amber-50 rounded-2xl text-amber-600">
@@ -93,11 +111,11 @@ export default function DashboardHome() {
               </div>
               <p className="text-xs text-slate-500 leading-relaxed">Pesquisas diretas de satisfação enviadas por clientes nas lojas e postos.</p>
               <Link href="/tratativas" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0f4c81] hover:underline pt-2">
-                Ver no SAC <ArrowRight className="w-3.5 h-3.5" />
+                Ir para Tratativas <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
-            {/* Origem: WhatsApp / Presencial */}
+            {/* WhatsApp / Presencial */}
             <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4 hover:shadow-md transition-all">
               <div className="flex items-center justify-between">
                 <div className="p-3 bg-emerald-50 rounded-2xl text-emerald-600">
@@ -111,14 +129,14 @@ export default function DashboardHome() {
               </div>
               <p className="text-xs text-slate-500 leading-relaxed">Ocorrências registradas internamente pelas equipes e gerentes de unidade.</p>
               <Link href="/tratativas" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0f4c81] hover:underline pt-2">
-                Ver no SAC <ArrowRight className="w-3.5 h-3.5" />
+                Ir para Tratativas <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>
 
           </div>
         </div>
 
-      </div>
+      </main>
     </div>
   );
 }
