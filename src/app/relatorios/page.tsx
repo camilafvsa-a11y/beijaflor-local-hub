@@ -2,151 +2,173 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Plus, Sparkles, HelpCircle } from 'lucide-react';
 
 export default function RelatoriosPage() {
-  const [showModal, setShowModal] = useState(false);
-  const [cliente, setCliente] = useState('');
-  const [texto, setTexto] = useState('');
-  const [npsResult, setNpsResult] = useState<number | null>(null);
+  const [periodo, setPeriodo] = useState('30d');
 
-  const handleAnaliseNPS = () => {
-    if (!texto) return;
-    const lower = texto.toLowerCase();
-    if (lower.includes('ótimo') || lower.includes('excelente') || lower.includes('adoro')) {
-      setNpsResult(10);
-    } else if (lower.includes('demorou') || lower.includes('ruim') || lower.includes('problema')) {
-      setNpsResult(4);
-    } else {
-      setNpsResult(8);
-    }
-  };
+  const keywords = [
+    { termo: 'posto beija flor', buscas: '14.200', crescimento: '+18%' },
+    { termo: 'churrascaria br 381', buscas: '8.900', crescimento: '+12%' },
+    { termo: 'melhor pão com linguiça', buscas: '6.400', crescimento: '+25%' },
+    { termo: 'posto 24 horas vespasiano', buscas: '4.100', crescimento: '+8%' },
+    { termo: 'beija flor pontua app', buscas: '3.800', crescimento: '+34%' }
+  ];
+
+  const temasIA = [
+    { tema: 'Qualidade da Alimentação & Pão com Linguiça', percentual: '38%', sentimento: 'Muito Positivo', cor: 'bg-emerald-50 text-emerald-700' },
+    { tema: 'Agilidade e Atendimento nos Caixas', percentual: '24%', sentimento: 'Atenção / Neutro', cor: 'bg-amber-50 text-amber-700' },
+    { tema: 'Uso do App Beija-flor Pontua', percentual: '19%', sentimento: 'Positivo', cor: 'bg-blue-50 text-blue-700' },
+    { tema: 'Estrutura e Limpeza dos Banheiros', percentual: '12%', sentimento: 'Muito Positivo', cor: 'bg-emerald-50 text-emerald-700' },
+    { tema: 'Tempo de Espera em Horário de Pico', percentual: '7%', sentimento: 'Crítico', cor: 'bg-rose-50 text-rose-700' }
+  ];
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-800">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-[#f8fafc] font-sans text-slate-800">
+      
+      {/* Menu Superior */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-[#0f4c81] flex items-center justify-center text-white font-black text-xs">
+              BF
+            </div>
+            <span className="font-extrabold text-slate-900 text-sm">Beija-flor Local Hub</span>
+          </div>
+
+          <nav className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
+            <Link href="/" className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900">
+              📊 Dashboard
+            </Link>
+            <Link href="/avaliacoes" className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900">
+              ⭐ Avaliações
+            </Link>
+            <Link href="/tratativas" className="px-3.5 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900">
+              🚨 Tratativas
+            </Link>
+            <Link href="/relatorios" className="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-white text-[#0f4c81] shadow-sm">
+              📈 Relatórios & Insights
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      {/* Conteúdo Principal */}
+      <main className="p-6 md:p-10 max-w-7xl mx-auto space-y-8">
         
-        {/* Top Navbar */}
-        <div className="flex items-center justify-between">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 bg-white px-4 py-2.5 rounded-2xl border border-slate-200/80 shadow-sm hover:bg-slate-50 transition-all">
-            <ArrowLeft className="w-4 h-4 text-slate-500" /> Voltar ao Dashboard
-          </Link>
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Relatórios & NPS</span>
-        </div>
-
-        {/* Hero Header */}
-        <div className="bg-gradient-to-r from-[#0f4c81] via-slate-900 to-slate-900 text-white p-8 rounded-3xl shadow-sm relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <span className="bg-white/10 backdrop-blur-sm text-emerald-300 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider border border-white/10">
-              Métricas Consolidadas
-            </span>
-            <h1 className="text-3xl font-black tracking-tight mt-3">Relatório Executivo de NPS</h1>
-            <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
-              Consolidação do Net Promoter Score unificando avaliações do Google Maps e pesquisas manuais de satisfação.
-            </p>
+            <span className="text-xs font-bold text-[#0f4c81] uppercase tracking-wider">Google Insights & IA</span>
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight mt-1">Relatórios Inteligentes e Palavras-chave</h1>
+            <p className="text-xs text-slate-500 mt-1">Métricas de busca no Google, comportamento do consumidor e temas extraídos por IA nas 27 unidades.</p>
           </div>
 
-          <button
-            onClick={() => setShowModal(true)}
-            className="bg-white text-[#0f4c81] px-6 py-3.5 rounded-2xl text-xs font-bold hover:bg-slate-100 transition-all flex items-center gap-2 shadow-sm shrink-0"
+          <select
+            value={periodo}
+            onChange={(e) => setPeriodo(e.target.value)}
+            className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 shadow-sm focus:outline-none"
           >
-            <Plus className="w-4 h-4" /> + Inserir Avaliação Externa
-          </button>
+            <option value="7d">Últimos 7 dias</option>
+            <option value="30d">Últimos 30 dias</option>
+            <option value="90d">Últimos 90 dias</option>
+          </select>
         </div>
 
-        {/* Guia de NPS */}
-        <div className="bg-blue-50/60 border border-blue-200/80 p-6 rounded-3xl space-y-1.5 shadow-sm">
-          <div className="flex items-center gap-2 text-xs font-extrabold text-[#0f4c81] uppercase tracking-wider">
-            <HelpCircle className="w-4 h-4" /> Guia do Net Promoter Score (NPS)
+        {/* Métricas do Google Business Profile */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-1">
+            <span className="text-xs font-bold text-slate-400 uppercase">Solicitações de Rota (GPS)</span>
+            <div className="text-3xl font-black text-slate-900">42.850</div>
+            <span className="text-xs font-bold text-emerald-600">▲ +14% no período</span>
           </div>
-          <p className="text-sm text-slate-600 leading-relaxed font-medium">
-            O **NPS** varia de **-100 a +100**. Notas **9-10** são **Promotores** (divulgam a marca), **7-8** são **Neutros**, e **0-6** são **Detretores**.
+
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-1">
+            <span className="text-xs font-bold text-slate-400 uppercase">Visualizações nas Buscas</span>
+            <div className="text-3xl font-black text-slate-900">186.400</div>
+            <span className="text-xs font-bold text-emerald-600">▲ +8% no período</span>
+          </div>
+
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-1">
+            <span className="text-xs font-bold text-slate-400 uppercase">Chamadas Telefônicas</span>
+            <div className="text-3xl font-black text-slate-900">3.120</div>
+            <span className="text-xs font-bold text-slate-500">• Estável</span>
+          </div>
+
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-1">
+            <span className="text-xs font-bold text-slate-400 uppercase">Cliques para o Site/App</span>
+            <div className="text-3xl font-black text-slate-900">12.490</div>
+            <span className="text-xs font-bold text-emerald-600">▲ +22% no período</span>
+          </div>
+        </div>
+
+        {/* Tabela de Palavras-chave e Análise de Temas */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          
+          {/* Palavras-chave do Google */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-sm font-black text-slate-900">🔍 Termos Mais Buscados no Google</h2>
+              <span className="text-xs font-bold text-slate-400">Google Search Console</span>
+            </div>
+
+            <div className="space-y-3">
+              {keywords.map((kw, idx) => (
+                <div key={idx} className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                  <div>
+                    <p className="text-xs font-bold text-slate-900">{kw.termo}</p>
+                    <span className="text-[10px] text-slate-400">Intenção Direta e Local</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs font-black text-slate-800">{kw.buscas}</span>
+                    <span className="text-[10px] font-bold text-emerald-600 block">{kw.crescimento}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Temas Detectados pela IA */}
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <h2 className="text-sm font-black text-slate-900">🧠 Temas Recorrentes (Extração via IA)</h2>
+              <span className="text-xs font-bold text-[#0f4c81]">Análise de Sentimento</span>
+            </div>
+
+            <div className="space-y-3">
+              {temasIA.map((tema, idx) => (
+                <div key={idx} className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-bold text-slate-900">{tema.tema}</span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${tema.cor}`}>
+                      {tema.sentimento}
+                    </span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                    <div 
+                      className="bg-[#0f4c81] h-2 rounded-full" 
+                      style={{ width: tema.percentual }}
+                    />
+                  </div>
+                  <span className="text-[10px] font-bold text-slate-400 text-right block">{tema.percentual} dos relatos</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* Recomendação Estratégica da IA */}
+        <div className="bg-gradient-to-r from-slate-900 to-[#0f4c81] text-white p-8 rounded-3xl shadow-sm space-y-3">
+          <span className="bg-amber-400/20 text-amber-300 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-amber-400/30">
+            Recomendação Operacional da IA
+          </span>
+          <h3 className="text-lg font-black">Reforço Operacional nos Caixas (Horário de Pico)</h3>
+          <p className="text-xs text-slate-300 leading-relaxed max-w-3xl">
+            A análise preditiva indicou um aumento de 25% nas buscas por "posto beija flor" nos finais de semana entre 17h e 20h. O tempo de fila nos caixas do Posto Lourdes e Sabará foi o único ponto recorrente com sentimento de atenção. Recomendamos alocar reforço de equipe nesses horários para manter a nota em 4.9.
           </p>
         </div>
 
-        {/* Métricas e Volumes Mensais */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">NPS Geral da Rede</span>
-            <div className="text-3xl font-black text-emerald-600">+82</div>
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 block w-fit">Zona de Excelência</span>
-          </div>
-
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Recebidas no Mês</span>
-            <div className="text-3xl font-black text-slate-900">142</div>
-            <span className="text-xs text-slate-500 font-medium">Todas as 27 contas</span>
-          </div>
-
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Acumulado Histórico</span>
-            <div className="text-3xl font-black text-slate-900">6.840</div>
-            <span className="text-xs text-slate-500 font-medium">Base total tratada</span>
-          </div>
-
-          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Taxa de Resposta IA</span>
-            <div className="text-3xl font-black text-[#0f4c81]">98.4%</div>
-            <span className="text-xs text-emerald-600 font-bold">Agilidade operacional</span>
-          </div>
-        </div>
-
-        {/* Modal de Inserção Externa */}
-        {showModal && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 border border-slate-200 shadow-xl">
-              <div className="flex justify-between items-center border-b pb-3">
-                <h3 className="font-bold text-slate-900 text-sm">Cadastrar Avaliação Externa (WhatsApp/Presencial)</h3>
-                <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 font-bold">✕</button>
-              </div>
-
-              <div className="space-y-3">
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Nome do Cliente</label>
-                  <input
-                    type="text"
-                    value={cliente}
-                    onChange={(e) => setCliente(e.target.value)}
-                    placeholder="Ex: João da Silva"
-                    className="w-full px-3.5 py-2.5 border rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#0f4c81]"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold text-slate-700 block mb-1">Relato / Feedback do Cliente</label>
-                  <textarea
-                    rows={3}
-                    value={texto}
-                    onChange={(e) => setTexto(e.target.value)}
-                    placeholder="Cole ou digite o texto recebido..."
-                    className="w-full px-3.5 py-2.5 border rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#0f4c81]"
-                  />
-                </div>
-
-                <button
-                  onClick={handleAnaliseNPS}
-                  className="w-full py-3 bg-[#0f4c81] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 shadow-sm"
-                >
-                  <Sparkles className="w-4 h-4 text-amber-400 fill-amber-400" /> Classificar Sentimento & NPS via IA
-                </button>
-
-                {npsResult !== null && (
-                  <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-center space-y-1">
-                    <span className="text-xs font-bold text-emerald-800 block uppercase">NPS Classificado pela IA:</span>
-                    <div className="text-3xl font-black text-emerald-700">{npsResult} / 10</div>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2 border-t">
-                <button onClick={() => setShowModal(false)} className="px-4 py-2 text-xs font-semibold text-slate-500">Cancelar</button>
-                <button onClick={() => setShowModal(false)} className="px-5 py-2 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-sm">Salvar Registro</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-      </div>
+      </main>
     </div>
   );
 }
