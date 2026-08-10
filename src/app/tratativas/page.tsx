@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Sparkles, Send, Copy, Check, Search, PlusCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, Sparkles, Send, Copy, Check, Search, PlusCircle, AlertCircle, Loader2, Wand2, Edit3 } from 'lucide-react';
 
 interface Tratativa {
   id?: string;
@@ -21,7 +21,15 @@ export default function TratativasPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  // Modal de nova ocorrência
+  // Estados para edição manual do texto
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editedText, setEditedText] = useState('');
+
+  // Estados para controle do Prompt Customizado da IA
+  const [customPrompt, setCustomPrompt] = useState<{ [key: string]: string }>({});
+  const [loadingAi, setLoadingAi] = useState<{ [key: string]: boolean }>({});
+
+  // Modal de nova ocorrência manual
   const [showModal, setShowModal] = useState(false);
   const [saving, setSaving] = useState(false);
   const [unidade, setUnidade] = useState('Posto Beija-flor | Vespasiano (MG-424)');
@@ -53,9 +61,50 @@ export default function TratativasPage() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const handleEdit = (id: string, currentText: string) => {
+    setEditingId(id);
+    setEditedText(currentText);
+  };
+
+  const handleSaveText = (id: string) => {
+    setTratativas(tratativas.map(t => (t.id === id || t.codigo === id) ? { ...t, resposta_ia: editedText } : t));
+    setEditingId(null);
+  };
+
+  const handleRegenerateWithAi = async (t: Tratativa, indexKey: string) => {
+    const instrucao = customPrompt[indexKey] || '';
+    setLoadingAi(prev => ({ ...prev, [indexKey]: true }));
+
+    try {
+      const res = await fetch('/api/ai-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          cliente: t.cliente,
+          mensagem: t.mensagem,
+          unidade: t.unidade,
+          instrucao
+        })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.resposta) {
+          setTratativas(prev => prev.map((item, idx) => 
+            (item.id === t.id || `${idx}` === indexKey) ? { ...item, resposta_ia: data.resposta } : item
+          ));
+        }
+      }
+    } catch (err) {
+      console.error('Erro ao chamar IA:', err);
+    } finally {
+      setLoadingAi(prev => ({ ...prev, [indexKey]: false }));
+    }
+  };
+
   const handleFinalizar = (id?: string) => {
     if (!id) return;
-    setTratativas(tratativas.map(t => t.id === id ? { ...t, status: 'Concluída' } : t));
+    setTratativas(tratativas.map(t => (t.id === id || t.codigo === id) ? { ...t, status: 'Concluída' } : t));
   };
 
   const handleCriarTratativa = async (e: React.FormEvent) => {
@@ -75,29 +124,26 @@ export default function TratativasPage() {
     };
 
     try {
-      const res = await fetch('/api/tratativas', {
+      // 1. Atualiza a tela imediatamente (Optimistic UI)
+      setTratativas(prev => [novaTratativa, ...prev]);
+      setSearchTerm('');
+      setShowModal(false);
+
+      // 2. Envia para o Supabase
+      await fetch('/api/tratativas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novaTratativa)
       });
 
-      if (res.ok) {
-        setShowModal(false);
-        setCliente('');
-        setMensagem('');
-        await loadTratativas();
-      } else {
-        // Adiciona otimisticamente na tela caso haja instabilidade no banco
-        setTratativas([novaTratativa, ...tratativas]);
-        setShowModal(false);
-        setCliente('');
-        setMensagem('');
-      }
-    } catch (err) {
-      setTratativas([novaTratativa, ...tratativas]);
-      setShowModal(false);
+      // Limpa os campos do formulário
       setCliente('');
       setMensagem('');
+
+      // Recarrega do banco
+      await loadTratativas();
+    } catch (err) {
+      console.error('Erro ao salvar no Supabase:', err);
     } finally {
       setSaving(false);
     }
@@ -167,65 +213,120 @@ export default function TratativasPage() {
           </div>
         ) : (
           <div className="space-y-4">
-            {filtered.map((t, idx) => (
-              <div key={t.id || idx} className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all space-y-4">
-                <div className="flex justify-between items-start border-b border-slate-100 pb-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-black text-slate-400">{t.codigo}</span>
-                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600">{t.origem}</span>
-                      <h3 className="font-bold text-slate-900 text-sm">{t.unidade}</h3>
+            {filtered.map((t, idx) => {
+              const itemKey = t.id || t.codigo || `${idx}`;
+              const isAiLoading = loadingAi[itemKey] || false;
+
+              return (
+                <div key={itemKey} className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-all space-y-4">
+                  <div className="flex justify-between items-start border-b border-slate-100 pb-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-black text-slate-400">{t.codigo}</span>
+                        <span className="text-xs font-bold px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-600">{t.origem}</span>
+                        <h3 className="font-bold text-slate-900 text-sm">{t.unidade}</h3>
+                      </div>
+                      <p className="text-xs font-bold text-slate-700">{t.cliente}</p>
                     </div>
-                    <p className="text-xs font-bold text-slate-700">{t.cliente}</p>
-                  </div>
 
-                  <span className={`px-3 py-1 rounded-xl text-xs font-bold ${
-                    t.status === 'Concluída' 
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                      : 'bg-amber-50 text-amber-700 border border-amber-200'
-                  }`}>
-                    {t.status}
-                  </span>
-                </div>
-
-                <p className="text-sm text-slate-700 font-medium italic bg-slate-50 p-4 rounded-2xl border border-slate-100">
-                  "{t.mensagem}"
-                </p>
-
-                <div className="bg-slate-50/80 p-4 rounded-2xl border border-slate-200/80 space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-[#0f4c81] flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" /> Resposta Recomendada por IA
+                    <span className={`px-3 py-1 rounded-xl text-xs font-bold ${
+                      t.status === 'Concluída' 
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
+                        : 'bg-amber-50 text-amber-700 border border-amber-200'
+                    }`}>
+                      {t.status}
                     </span>
-                    <button
-                      onClick={() => handleCopy(t.id || `${idx}`, t.resposta_ia)}
-                      className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-semibold"
-                    >
-                      {copiedId === (t.id || `${idx}`) ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                      {copiedId === (t.id || `${idx}`) ? 'Copiado' : 'Copiar'}
-                    </button>
                   </div>
-                  <p className="text-xs text-slate-600 font-medium italic leading-relaxed">"{t.resposta_ia}"</p>
-                </div>
 
-                <div className="flex justify-end">
-                  {t.status === 'Concluída' ? (
-                    <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">✓ Chamado Encerrado</span>
-                  ) : (
-                    <button
-                      onClick={() => handleFinalizar(t.id)}
-                      className="px-4 py-2 bg-[#0f4c81] text-white text-xs font-bold rounded-xl hover:bg-blue-900 transition-all flex items-center gap-1.5"
-                    >
-                      <Send className="w-3.5 h-3.5" /> Enviar Resposta e Finalizar
-                    </button>
-                  )}
+                  <p className="text-sm text-slate-700 font-medium italic bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                    "{t.mensagem}"
+                  </p>
+
+                  {/* Resposta Recomendada por IA */}
+                  <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold text-[#0f4c81] flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-400" /> Resposta Recomendada por IA
+                      </span>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => handleCopy(itemKey, t.resposta_ia)}
+                          className="text-xs text-slate-500 hover:text-slate-800 flex items-center gap-1 font-semibold"
+                        >
+                          {copiedId === itemKey ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                          {copiedId === itemKey ? 'Copiado' : 'Copiar'}
+                        </button>
+
+                        {editingId !== itemKey && t.status !== 'Concluída' && (
+                          <button
+                            onClick={() => handleEdit(itemKey, t.resposta_ia)}
+                            className="text-xs text-[#0f4c81] hover:underline flex items-center gap-1 font-semibold"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" /> Editar Texto
+                          </button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Edição Direta do Texto */}
+                    {editingId === itemKey ? (
+                      <div className="space-y-3">
+                        <textarea
+                          rows={3}
+                          value={editedText}
+                          onChange={(e) => setEditedText(e.target.value)}
+                          className="w-full p-3 bg-white border border-slate-300 rounded-xl text-xs font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0f4c81]/30"
+                        />
+                        <div className="flex justify-end gap-2">
+                          <button onClick={() => setEditingId(null)} className="text-xs px-3 py-1.5 font-semibold text-slate-500">Cancelar</button>
+                          <button onClick={() => handleSaveText(itemKey)} className="text-xs px-3.5 py-1.5 bg-[#0f4c81] text-white font-semibold rounded-xl shadow-sm">Salvar Alteração</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-xs text-slate-600 font-medium italic leading-relaxed">"{t.resposta_ia}"</p>
+                    )}
+
+                    {/* Campo de Comando para Reescrever com IA */}
+                    {t.status !== 'Concluída' && editingId !== itemKey && (
+                      <div className="pt-2 border-t border-slate-200/60 flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+                        <input
+                          type="text"
+                          placeholder="Instrua a IA (ex: 'Torne mais formal', 'Ofereça o WhatsApp da gerência')..."
+                          value={customPrompt[itemKey] || ''}
+                          onChange={(e) => setCustomPrompt({ ...customPrompt, [itemKey]: e.target.value })}
+                          className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-[#0f4c81]/20"
+                        />
+                        <button
+                          onClick={() => handleRegenerateWithAi(t, itemKey)}
+                          disabled={isAiLoading}
+                          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 shrink-0 disabled:opacity-50"
+                        >
+                          {isAiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Wand2 className="w-3.5 h-3.5 text-amber-400" />}
+                          {isAiLoading ? 'Gerando...' : 'Reescrever com IA'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex justify-end">
+                    {t.status === 'Concluída' ? (
+                      <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">✓ Chamado Encerrado</span>
+                    ) : (
+                      <button
+                        onClick={() => handleFinalizar(itemKey)}
+                        className="px-4 py-2 bg-[#0f4c81] text-white text-xs font-bold rounded-xl hover:bg-blue-900 transition-all flex items-center gap-1.5"
+                      >
+                        <Send className="w-3.5 h-3.5" /> Enviar Resposta e Finalizar
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
-        {/* Modal Novo Chamado */}
+        {/* Modal Novo Chamado Manual */}
         {showModal && (
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-3xl p-6 max-w-lg w-full space-y-4 shadow-2xl border border-slate-200">
