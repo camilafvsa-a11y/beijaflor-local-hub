@@ -26,67 +26,72 @@ export default function RelatoriosPage() {
     <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-800">
       <div className="max-w-7xl mx-auto space-y-6">
         
+        {/* Top Navbar */}
         <div className="flex items-center justify-between">
-          <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-sm hover:bg-slate-50 transition-all">
-            <ArrowLeft className="w-3.5 h-3.5 text-slate-500" /> Voltar ao Dashboard
+          <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 bg-white px-4 py-2.5 rounded-2xl border border-slate-200/80 shadow-sm hover:bg-slate-50 transition-all">
+            <ArrowLeft className="w-4 h-4 text-slate-500" /> Voltar ao Dashboard
           </Link>
           <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Relatórios & NPS</span>
         </div>
 
+        {/* Hero Header */}
         <div className="bg-gradient-to-r from-[#0f4c81] via-slate-900 to-slate-900 text-white p-8 rounded-3xl shadow-sm relative overflow-hidden flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div>
-            <span className="bg-white/10 backdrop-blur-sm text-emerald-300 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-white/10">
+            <span className="bg-white/10 backdrop-blur-sm text-emerald-300 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider border border-white/10">
               Métricas Consolidadas
             </span>
-            <h1 className="text-2xl font-black tracking-tight mt-2">Relatório Executivo de NPS</h1>
-            <p className="text-slate-300 text-xs mt-1.5 max-w-xl leading-relaxed">
+            <h1 className="text-3xl font-black tracking-tight mt-3">Relatório Executivo de NPS</h1>
+            <p className="text-slate-300 text-sm mt-2 max-w-2xl leading-relaxed">
               Consolidação do Net Promoter Score unificando avaliações do Google Maps e pesquisas manuais de satisfação.
             </p>
           </div>
 
           <button
             onClick={() => setShowModal(true)}
-            className="bg-white text-[#0f4c81] px-5 py-3 rounded-2xl text-xs font-bold hover:bg-slate-100 transition-all flex items-center gap-2 shadow-sm"
+            className="bg-white text-[#0f4c81] px-6 py-3.5 rounded-2xl text-xs font-bold hover:bg-slate-100 transition-all flex items-center gap-2 shadow-sm shrink-0"
           >
             <Plus className="w-4 h-4" /> + Inserir Avaliação Externa
           </button>
         </div>
 
-        <div className="bg-blue-50/60 border border-blue-200/80 p-5 rounded-2xl space-y-1.5">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#0f4c81] uppercase tracking-wider">
+        {/* Guia de NPS */}
+        <div className="bg-blue-50/60 border border-blue-200/80 p-6 rounded-3xl space-y-1.5 shadow-sm">
+          <div className="flex items-center gap-2 text-xs font-extrabold text-[#0f4c81] uppercase tracking-wider">
             <HelpCircle className="w-4 h-4" /> Guia do Net Promoter Score (NPS)
           </div>
-          <p className="text-xs text-slate-600 leading-relaxed font-medium">
+          <p className="text-sm text-slate-600 leading-relaxed font-medium">
             O **NPS** varia de **-100 a +100**. Notas **9-10** são **Promotores** (divulgam a marca), **7-8** são **Neutros**, e **0-6** são **Detretores**.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
+        {/* Métricas e Volumes Mensais */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">NPS Geral da Rede</span>
             <div className="text-3xl font-black text-emerald-600">+82</div>
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">Zona de Excelência</span>
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200 block w-fit">Zona de Excelência</span>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Recebidas no Mês</span>
-            <div className="text-2xl font-black text-slate-900">142</div>
-            <span className="text-[10px] text-slate-400 font-medium">Todas as 27 contas</span>
+            <div className="text-3xl font-black text-slate-900">142</div>
+            <span className="text-xs text-slate-500 font-medium">Todas as 27 contas</span>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Acumulado Histórico</span>
-            <div className="text-2xl font-black text-slate-900">6.840</div>
-            <span className="text-[10px] text-slate-400 font-medium">Base total tratada</span>
+            <div className="text-3xl font-black text-slate-900">6.840</div>
+            <span className="text-xs text-slate-500 font-medium">Base total tratada</span>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-1">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-1">
             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Taxa de Resposta IA</span>
-            <div className="text-2xl font-black text-[#0f4c81]">98.4%</div>
-            <span className="text-[10px] text-emerald-600 font-bold">Agilidade operacional</span>
+            <div className="text-3xl font-black text-[#0f4c81]">98.4%</div>
+            <span className="text-xs text-emerald-600 font-bold">Agilidade operacional</span>
           </div>
         </div>
 
+        {/* Modal de Inserção Externa */}
         {showModal && (
           <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 border border-slate-200 shadow-xl">
@@ -103,7 +108,7 @@ export default function RelatoriosPage() {
                     value={cliente}
                     onChange={(e) => setCliente(e.target.value)}
                     placeholder="Ex: João da Silva"
-                    className="w-full px-3 py-2 border rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#0f4c81]"
+                    className="w-full px-3.5 py-2.5 border rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#0f4c81]"
                   />
                 </div>
 
@@ -114,7 +119,7 @@ export default function RelatoriosPage() {
                     value={texto}
                     onChange={(e) => setTexto(e.target.value)}
                     placeholder="Cole ou digite o texto recebido..."
-                    className="w-full px-3 py-2 border rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#0f4c81]"
+                    className="w-full px-3.5 py-2.5 border rounded-xl text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#0f4c81]"
                   />
                 </div>
 
