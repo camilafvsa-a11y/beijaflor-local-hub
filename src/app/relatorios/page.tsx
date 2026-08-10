@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, BarChart3, Plus, Download, Sparkles, PieChart, Star } from 'lucide-react';
+import { ArrowLeft, Plus, Sparkles, HelpCircle } from 'lucide-react';
 
 export default function RelatoriosPage() {
   const [showModal, setShowModal] = useState(false);
@@ -12,7 +12,6 @@ export default function RelatoriosPage() {
 
   const handleAnaliseNPS = () => {
     if (!texto) return;
-    // Algoritmo Simulado NPS com IA
     const lower = texto.toLowerCase();
     if (lower.includes('ótimo') || lower.includes('excelente') || lower.includes('adoro')) {
       setNpsResult(10);
@@ -24,62 +23,71 @@ export default function RelatoriosPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50/50 p-6 md:p-10">
+    <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 bg-white px-3.5 py-2 rounded-xl border border-slate-200/80 shadow-sm">
-            <ArrowLeft className="w-4 h-4" /> Voltar ao Dashboard
+          <Link href="/" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 bg-white px-4 py-2 rounded-xl border border-slate-200/80 shadow-xs">
+            <ArrowLeft className="w-3.5 h-3.5 text-slate-500" /> Voltar ao Dashboard
           </Link>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-              Relatórios Consolidados & NPS
-            </h1>
-            <p className="text-slate-500 text-sm mt-1">Consolidação de dados do Google Maps + Inserções Manuais com análise de NPS por IA.</p>
+            <h1 className="text-xl font-bold text-slate-900">Relatórios Executivos & Análise NPS</h1>
+            <p className="text-slate-500 text-xs mt-1">Consolidação do volume mensal e pesquisas externas do Grupo Beija-flor.</p>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setShowModal(true)}
-              className="bg-[#0f4c81] text-white px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-blue-900 transition-all flex items-center gap-1.5 shadow-sm"
-            >
-              <Plus className="w-4 h-4" /> + Inserção Manual (NPS IA)
-            </button>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-[#0f4c81] text-white px-4 py-2.5 rounded-xl text-xs font-semibold hover:bg-blue-900 transition-all flex items-center gap-1.5 shadow-xs"
+          >
+            <Plus className="w-4 h-4" /> + Cadastrar Avaliação Externa (NPS IA)
+          </button>
+        </div>
+
+        {/* O que é NPS - Card Educativo Minimalista */}
+        <div className="bg-blue-50/50 border border-blue-200/60 p-5 rounded-2xl space-y-2">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#0f4c81]">
+            <HelpCircle className="w-4 h-4" /> Entenda o que é a Nota NPS (Net Promoter Score)
+          </div>
+          <p className="text-xs text-slate-600 leading-relaxed">
+            O **NPS** mede o nível de lealdade dos clientes numa escala de **-100 a +100**. 
+            Clientes com notas **9-10** são **Promotores** (recomendam o grupo), **7-8** são **Neutros**, e **0-6** são **Detretores**.
+          </p>
+        </div>
+
+        {/* Métricas e Volumes Mensais */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+            <span className="text-xs font-semibold text-slate-400">NPS Unificado da Rede</span>
+            <div className="text-2xl font-bold text-emerald-600 mt-1">+82</div>
+            <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-2 py-0.5 rounded-md">Zona de Excelência</span>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+            <span className="text-xs font-semibold text-slate-400">Recebidas no Mês (Agosto)</span>
+            <div className="text-2xl font-bold text-slate-900 mt-1">142</div>
+            <span className="text-[10px] text-slate-400 font-medium">Todas as 27 contas</span>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+            <span className="text-xs font-semibold text-slate-400">Acumulado Histórico</span>
+            <div className="text-2xl font-bold text-slate-900 mt-1">6.840</div>
+            <span className="text-[10px] text-slate-400 font-medium">Avaliações consolidadas</span>
+          </div>
+
+          <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs">
+            <span className="text-xs font-semibold text-slate-400">Taxa de Resposta IA</span>
+            <div className="text-2xl font-bold text-[#0f4c81] mt-1">98.4%</div>
+            <span className="text-[10px] text-emerald-600 font-medium">Atendimento agilizado</span>
           </div>
         </div>
 
-        {/* Métricas de NPS Unificado */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
-            <span className="text-xs font-semibold text-slate-400">NPS Geral Unificado</span>
-            <div className="text-3xl font-bold text-emerald-600">+82</div>
-            <p className="text-xs text-slate-500">Zona de Excelência (Google + Pesquisas Internas)</p>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
-            <span className="text-xs font-semibold text-slate-400">Promotores vs Detretores</span>
-            <div className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <span className="text-emerald-600">86% Promotores</span> • <span className="text-red-500">4% Detretores</span>
-            </div>
-            <p className="text-xs text-slate-500">Calculado via Algoritmo de Sentimento IA</p>
-          </div>
-
-          <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-2">
-            <span className="text-xs font-semibold text-slate-400">Origem das Avaliações</span>
-            <div className="text-sm font-bold text-slate-800">
-              82% Google Maps • 18% Inserção Manual
-            </div>
-            <p className="text-xs text-slate-500">Total de 1.420 interações registradas</p>
-          </div>
-        </div>
-
-        {/* Modal de Inserção Manual com NPS IA */}
+        {/* Modal de Inserção Externa */}
         {showModal && (
-          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 border border-slate-200 shadow-xl">
               <div className="flex justify-between items-center border-b pb-3">
-                <h3 className="font-bold text-slate-900 text-base">Inserção Manual de Pesquisa / Feedback</h3>
+                <h3 className="font-bold text-slate-900 text-sm">Cadastrar Avaliação Externa (WhatsApp/Presencial)</h3>
                 <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600">✕</button>
               </div>
 
@@ -91,7 +99,7 @@ export default function RelatoriosPage() {
                     value={cliente}
                     onChange={(e) => setCliente(e.target.value)}
                     placeholder="Ex: João da Silva"
-                    className="w-full px-3 py-2 border rounded-xl text-sm"
+                    className="w-full px-3 py-2 border rounded-xl text-xs"
                   />
                 </div>
 
@@ -101,8 +109,8 @@ export default function RelatoriosPage() {
                     rows={3}
                     value={texto}
                     onChange={(e) => setTexto(e.target.value)}
-                    placeholder="Cole ou digite o texto do cliente (ex: Atendimento ótimo no posto...)"
-                    className="w-full px-3 py-2 border rounded-xl text-sm"
+                    placeholder="Cole ou digite o texto recebido..."
+                    className="w-full px-3 py-2 border rounded-xl text-xs"
                   />
                 </div>
 
@@ -110,21 +118,20 @@ export default function RelatoriosPage() {
                   onClick={handleAnaliseNPS}
                   className="w-full py-2.5 bg-[#0f4c81] text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-2"
                 >
-                  <Sparkles className="w-4 h-4" /> Analisar Sentimento e Atribuir NPS por IA
+                  <Sparkles className="w-4 h-4" /> Classificar Sentimento & NPS via IA
                 </button>
 
                 {npsResult !== null && (
                   <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-1">
-                    <span className="text-xs font-bold text-emerald-800">NPS Atribuído pela IA:</span>
+                    <span className="text-xs font-bold text-emerald-800">NPS Classificado pela IA:</span>
                     <div className="text-2xl font-bold text-emerald-700">{npsResult} / 10</div>
-                    <p className="text-[11px] text-emerald-600">Classificação: {npsResult >= 9 ? 'Promotor' : 'Neutro/Detretor'}</p>
                   </div>
                 )}
               </div>
 
               <div className="flex justify-end gap-2 pt-2 border-t">
                 <button onClick={() => setShowModal(false)} className="px-4 py-2 text-xs font-semibold text-slate-600">Cancelar</button>
-                <button onClick={() => setShowModal(false)} className="px-4 py-2 bg-emerald-600 text-white text-xs font-semibold rounded-xl">Salvar no Relatório</button>
+                <button onClick={() => setShowModal(false)} className="px-4 py-2 bg-emerald-600 text-white text-xs font-semibold rounded-xl">Salvar Registro</button>
               </div>
             </div>
           </div>
