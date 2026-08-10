@@ -107,11 +107,43 @@ export default function TratativasPage() {
     setTratativas(tratativas.map(t => (t.id === id || t.codigo === id) ? { ...t, status: 'Concluída' } : t));
   };
 
-  const handleCriarTratativa = async (e: React.FormEvent) => {
+  const handleCriarTratativa = const handleCriarTratativa = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!cliente || !mensagem) return;
 
     setSaving(true);
+
+    const novaTratativa: Tratativa = {
+      id: `temp-${Date.now()}`,
+      codigo: `TR-${Math.floor(100 + Math.random() * 900)}`,
+      origem,
+      unidade,
+      cliente,
+      mensagem,
+      resposta_ia: `Olá ${cliente}, recebemos sua manifestação referente ao ${unidade}. Nossa equipe de gestão já foi notificada para averiguar o ocorrido e tomar as devidas providências. Agradecemos por nos ajudar a melhorar nossos serviços!`,
+      status: 'Pendente'
+    };
+
+    try {
+      // 1. Adiciona o item permanentemente na lista da tela
+      setTratativas(prev => [novaTratativa, ...prev]);
+      setSearchTerm('');
+      setShowModal(false);
+      setCliente('');
+      setMensagem('');
+
+      // 2. Envia para o Supabase em segundo plano (sem recarregar a lista do zero)
+      await fetch('/api/tratativas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(novaTratativa)
+      });
+    } catch (err) {
+      console.error('Erro ao enviar para o banco:', err);
+    } finally {
+      setSaving(false);
+    }
+  };
 
     const novaTratativa: Tratativa = {
       codigo: `TR-${Math.floor(100 + Math.random() * 900)}`,
